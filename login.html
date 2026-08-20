@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Log in — CampusSphere</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="auth.css">
+<link rel="stylesheet" href="google-auth.css">
+<script defer src="api.js?v=google-auth-1">
+</script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script defer src="auth.js?v=google-auth-1">
+</script>
+</head>
+<body>
+<main class="auth-shell">
+<section class="auth-panel">
+<a class="brand" href="index.html">
+<b>C</b>CampusSphere</a>
+<div class="form-wrap">
+<h1>Welcome back.</h1>
+<p>Log in to see what's happening on your campus.</p>
+<div class="google-auth" data-google-auth aria-label="Continue with Google"></div>
+<div class="divider">OR CONTINUE WITH EMAIL</div>
+<form id="login-form" novalidate>
+<p class="auth-error" id="auth-error" role="alert" aria-live="polite" hidden></p>
+<label>Email address<input id="login-email" name="email" type="email" placeholder="you@university.edu" autocomplete="email" required>
+<span class="field-error">Enter a valid email address.</span>
+</label>
+<label class="password-label">Password<input id="login-password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password" required>
+<button class="show-password" type="button" data-password-toggle>Show</button>
+</label>
+<div class="form-row">
+<label class="check">
+<input type="checkbox">Remember me</label>
+<a class="forgot" href="#forgot">Forgot password?</a>
+</div>
+<button class="submit" type="submit">Log in to CampusSphere →</button>
+</form>
+<p class="bottom-link">New to CampusSphere? <a href="signup.html">Create an account</a>
+</p>
+</div>
+<p class="auth-footer">© 2026 CampusSphere · Privacy · Terms</p>
+</section>
+<aside class="auth-visual">
+<div class="orbit o1">
+</div>
+<div class="orbit o2">
+</div>
+<div class="visual-top">
+<span>One campus. One network.</span>
+<span>✦</span>
+</div>
+<div class="visual-copy">
+<p>YOUR CAMPUS, CONNECTED</p>
+<h2>Make every<br>moment <i>matter.</i>
+</h2>
+<span>Discover the people, projects and possibilities waiting for you.</span>
+</div>
+<div class="visual-card">
+<p>“CampusSphere made it easy to find my team and finally build something I'm proud of.”</p>
+<div class="mini-students">
+<img src="https://i.pravatar.cc/64?img=47" alt="Riya Sharma">
+<b>Riya Sharma<br>
+<small>Computer Science, 3rd year</small>
+</b>
+<span>★★★★★</span>
+</div>
+</div>
+</aside>
+</main>
+</body>
+</html>

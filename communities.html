@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Communities — CampusSphere</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="communities.css">
+  <link rel="stylesheet" href="community-integration.css">
+  <script type="module" src="communities.js"></script>
+</head>
+<body>
+  <header><a class="brand" href="dashboard.html"><b>C</b>CampusSphere</a><nav><a href="dashboard.html">Dashboard</a><a href="discover.html">Discover</a><a href="events.html">Events</a><a class="active" href="communities.html">Communities</a><a href="#projects">Projects</a></nav><img data-current-user-avatar alt="Current user"></header>
+  <main class="wrap">
+    <section class="intro"><p>FIND YOUR PEOPLE</p><h1>Communities that feel like <i>home.</i></h1><span>Explore the clubs, societies and circles that make campus feel more like yours.</span></section>
+    <section class="search"><label>⌕ <input id="community-search" placeholder="Search communities by name or interest"></label><button id="create-community" type="button">＋ Create community</button></section>
+    <section class="pills"><button class="active" data-category="all" type="button">All</button><button data-category="technology" type="button">Technology</button><button data-category="creative" type="button">Creative</button><button data-category="business" type="button">Business</button><button data-category="sports" type="button">Sports</button><button data-category="social" type="button">Social</button></section>
+    <section class="heading"><div><h2>Popular communities</h2><p><b id="count">0</b> communities on your campus</p></div><button type="button">Sort: Most popular ⌄</button></section>
+    <section class="community-grid" id="community-grid" aria-live="polite"></section>
+    <div class="empty" hidden><b>⌕</b><h2>No communities found</h2><p>Try another search or category.</p></div>
+    <p id="community-feedback" class="community-feedback" hidden></p>
+  </main>
+</body>
+</html>

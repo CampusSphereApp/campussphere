@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard — CampusSphere</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="dashboard.css">
+<link rel="stylesheet" href="dashboard-search.css">
+<style>.dashboard-empty{margin:12px 0;color:#70798e;font-size:11px}</style>
+<script type="module" src="dashboard.js?v=about-team-1"></script>
+</head>
+<body>
+<div class="app-shell">
+<aside class="sidebar">
+<a class="brand" href="dashboard.html">
+<b>C</b>CampusSphere</a>
+<nav aria-label="Dashboard navigation">
+<a class="selected" href="dashboard.html">⌂ <span>Dashboard</span>
+</a>
+<a href="discover.html">◈ <span>Discover</span>
+</a>
+<a href="communities.html">◎ <span>Communities</span>
+</a>
+<a href="events.html">◷ <span>Events</span>
+</a>
+<a href="projects.html">◇ <span>Projects</span>
+</a>
+<a href="opportunities.html">↗ <span>Opportunities</span>
+</a>
+<hr>
+<a href="messages.html">◌ <span>Messages</span>
+<i>3</i>
+</a>
+<a href="notifications.html">♧ <span>Notifications</span>
+<i class="dot">
+</i>
+</a>
+<a href="profile.html">♙ <span>Profile</span>
+</a>
+<a href="settings.html">⚙ <span>Settings</span>
+</a>
+</nav>
+<div class="sidebar-user">
+<img data-current-user-avatar alt="Current user">
+<div>
+<b data-current-user-name>Loading profile…</b>
+<small data-current-user-detail>Loading profile…</small>
+</div>
+<a href="index.html" aria-label="Log out">↪</a>
+</div>
+</aside>
+<main>
+<header class="topbar">
+<button class="mobile-menu" aria-label="Open dashboard navigation">☰</button>
+<div class="search">⌕ <input id="dashboard-user-search" type="search" placeholder="Search CampusSphere" autocomplete="off" aria-expanded="false" aria-controls="dashboard-user-results">
+<div class="dashboard-user-results" id="dashboard-user-results" role="listbox" hidden>
+</div>
+</div>
+<div class="top-actions">
+<button class="help-button" aria-label="Help">?</button>
+<button class="bell" aria-label="Notifications">♧<i>
+</i>
+</button>
+<img data-current-user-avatar alt="Current user">
+</div>
+</header>
+<div class="content">
+<section class="greeting">
+<div>
+<p>Tuesday, March 10</p>
+<h1>Good morning, Vijay <span>👋</span>
+</h1>
+<small>Here's what's happening around your campus.</small>
+</div>
+<div class="range-wrap"><button class="outline-btn" type="button" aria-expanded="false">⌄ <span>This week</span></button><div class="range-menu" hidden><button type="button" data-range="today">Today</button><button type="button" data-range="week" aria-selected="true">This week</button><button type="button" data-range="month">This month</button></div></div>
+</section>
+<section>
+<div class="section-title">
+<h2>Quick actions</h2>
+</div>
+<div class="quick-grid">
+<a href="discover.html">
+<b class="purple">✦</b>
+<span>
+<strong>Find teammates</strong>
+<small>Build your next big idea</small>
+</span>
+<i>→</i>
+</a>
+<a href="projects.html">
+<b class="coral">◇</b>
+<span>
+<strong>Create a project</strong>
+<small>Bring an idea to life</small>
+</span>
+<i>→</i>
+</a>
+<a href="events.html">
+<b class="yellow">◷</b>
+<span>
+<strong>Explore events</strong>
+<small>See what's coming up</small>
+</span>
+<i>→</i>
+</a>
+<a href="communities.html">
+<b class="teal">◎</b>
+<span>
+<strong>Join a community</strong>
+<small>Find your people</small>
+</span>
+<i>→</i>
+</a>
+</div>
+</section>
+<div class="dashboard-grid">
+<section class="recommend">
+<div class="section-title">
+<div>
+<h2>Recommended for you</h2>
+<p>Picked from your interests and activity</p>
+</div>
+<a href="discover.html">View all →</a>
+</div>
+<div class="tabs" role="tablist">
+<button class="active" role="tab">Students</button>
+<button role="tab">Communities</button>
+<button role="tab">Projects</button>
+</div>
+<div class="student-list">
+<p class="dashboard-empty">Loading students…</p>
+</div>
+</section>
+<aside class="upcoming">
+<div class="section-title">
+<h2>Upcoming events</h2>
+<a href="#events">View all →</a>
+</div>
+<p class="dashboard-empty">Loading upcoming events…</p>
+</aside>
+</div>
+<div class="dashboard-grid lower">
+<section class="projects" id="projects">
+<div class="section-title">
+<div>
+<h2>Projects looking for you</h2>
+<p>Teams are looking for your skills</p>
+</div>
+<a href="#projects">Browse projects →</a>
+</div>
+<p class="dashboard-empty">Loading projects…</p>
+</section>
+<aside class="activity">
+<div class="section-title">
+<h2>Campus activity</h2>
+<a href="#activity">See all →</a>
+</div>
+<p class="dashboard-empty">Loading campus activity…</p>
+</aside>
+</div>
+</div>
+</main>
+</div>
+</body>
+</html>

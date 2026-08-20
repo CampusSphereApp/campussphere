@@ -1,0 +1,14 @@
+import { Router } from 'express';
+import { acceptConnection, getConnectionStatus, listConnections, listPending, listRequests, listSent, rejectConnection, removeConnection, sendConnection } from '../controllers/connection.controller.js';
+import { authenticate } from '../middleware/authenticate.js';
+export const connectionRouter = Router();
+connectionRouter.use(authenticate);
+connectionRouter.get('/', listConnections);
+connectionRouter.get('/requests', listRequests);
+connectionRouter.get('/sent', listSent);
+connectionRouter.get('/pending', listPending);
+connectionRouter.get('/status/:userId', getConnectionStatus);
+connectionRouter.post('/:userId', sendConnection);
+connectionRouter.patch('/:connectionId/accept', acceptConnection);
+connectionRouter.patch('/:connectionId/reject', rejectConnection);
+connectionRouter.delete('/:connectionId', removeConnection);

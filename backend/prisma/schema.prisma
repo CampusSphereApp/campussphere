@@ -1,0 +1,363 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserYear {
+  FIRST
+  SECOND
+  THIRD
+  FOURTH
+  POSTGRADUATE
+}
+enum ConnectionStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  BLOCKED
+}
+enum CommunityRole {
+  OWNER
+  ADMIN
+  MODERATOR
+  MEMBER
+}
+enum ProjectStatus {
+  IDEA
+  RECRUITING
+  ACTIVE
+  COMPLETED
+  PAUSED
+}
+enum ProjectDifficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+enum ProjectMemberRole {
+  OWNER
+  DEVELOPER
+  DESIGNER
+  ML_ENGINEER
+  BACKEND_DEVELOPER
+  FRONTEND_DEVELOPER
+  OTHER
+}
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+enum EventParticipantStatus {
+  REGISTERED
+  WAITLISTED
+  CANCELLED
+  ATTENDED
+}
+enum OpportunityType {
+  INTERNSHIP
+  JOB
+  HACKATHON
+  SCHOLARSHIP
+  COMPETITION
+  WORKSHOP
+  FELLOWSHIP
+}
+enum NotificationType {
+  CONNECTION_REQUEST
+  CONNECTION_ACCEPTED
+  PROJECT_APPLICATION
+  PROJECT_APPLICATION_ACCEPTED
+  EVENT_REMINDER
+  COMMUNITY_ACTIVITY
+  MESSAGE
+  SYSTEM
+}
+
+model User {
+  id String @id @default(cuid())
+  fullName String
+  email String @unique
+  passwordHash String
+  googleSub String? @unique
+  avatar String?
+  bio String?
+  college String?
+  course String?
+  year UserYear?
+  location String?
+  refreshTokenHash String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  skills UserSkill[]
+  interests UserInterest[]
+  ownedCommunities Community[] @relation("CommunityOwner")
+  communityMemberships CommunityMember[]
+  ownedProjects Project[] @relation("ProjectOwner")
+  projectMemberships ProjectMember[]
+  eventParticipants EventParticipant[]
+  notifications Notification[]
+  projectApplications ProjectApplication[]
+  sentConnections Connection[] @relation("ConnectionRequester")
+  receivedConnections Connection[] @relation("ConnectionRecipient")
+  posts Post[]
+  comments Comment[]
+  likes PostLike[]
+  conversationMemberships ConversationMember[]
+  sentMessages Message[]
+  @@index([college, course])
+}
+
+model Skill {
+  id String @id @default(cuid())
+  name String @unique
+  users UserSkill[]
+  projectSkills ProjectSkill[]
+}
+
+model Interest {
+  id String @id @default(cuid())
+  name String @unique
+  users UserInterest[]
+}
+
+model UserSkill {
+  userId String
+  skillId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  @@id([userId, skillId])
+}
+
+model UserInterest {
+  userId String
+  interestId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  interest Interest @relation(fields: [interestId], references: [id], onDelete: Cascade)
+  @@id([userId, interestId])
+}
+
+model Connection {
+  id String @id @default(cuid())
+  requesterId String
+  recipientId String
+  status ConnectionStatus @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  requester User @relation("ConnectionRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  recipient User @relation("ConnectionRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  @@unique([requesterId, recipientId])
+  @@index([recipientId, status])
+}
+
+model Community {
+  id String @id @default(cuid())
+  name String @unique
+  description String
+  image String?
+  banner String?
+  category String
+  ownerId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  owner User @relation("CommunityOwner", fields: [ownerId], references: [id])
+  members CommunityMember[]
+  posts Post[]
+  @@index([category])
+}
+
+model Post {
+  id String @id @default(cuid())
+  authorId String
+  communityId String?
+  content String
+  image String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  community Community? @relation(fields: [communityId], references: [id], onDelete: SetNull)
+  likes PostLike[]
+  comments Comment[]
+  @@index([createdAt])
+  @@index([communityId, createdAt])
+}
+
+model PostLike {
+  postId String
+  userId String
+  createdAt DateTime @default(now())
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@id([postId, userId])
+}
+
+model Comment {
+  id String @id @default(cuid())
+  postId String
+  authorId String
+  content String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  @@index([postId, createdAt])
+}
+
+model CommunityMember {
+  communityId String
+  userId String
+  role CommunityRole @default(MEMBER)
+  joinedAt DateTime @default(now())
+  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@id([communityId, userId])
+}
+
+model Project {
+  id String @id @default(cuid())
+  title String
+  description String
+  ownerId String
+  status ProjectStatus @default(IDEA)
+  difficulty ProjectDifficulty @default(INTERMEDIATE)
+  githubUrl String?
+  demoUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  owner User @relation("ProjectOwner", fields: [ownerId], references: [id])
+  members ProjectMember[]
+  skills ProjectSkill[]
+  roles ProjectRole[]
+  applications ProjectApplication[]
+  @@index([status, difficulty])
+}
+
+model ProjectRole {
+  id String @id @default(cuid())
+  projectId String
+  role ProjectMemberRole
+  openPositions Int @default(1)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  @@index([projectId, role])
+}
+
+model ProjectApplication {
+  id String @id @default(cuid())
+  projectId String
+  applicantId String
+  role ProjectMemberRole
+  message String?
+  status ApplicationStatus @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  applicant User @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  @@unique([projectId, applicantId])
+  @@index([projectId, status])
+}
+
+model ProjectMember {
+  projectId String
+  userId String
+  role ProjectMemberRole
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@id([projectId, userId])
+}
+
+model ProjectSkill {
+  projectId String
+  skillId String
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  @@id([projectId, skillId])
+}
+
+model Event {
+  id String @id @default(cuid())
+  title String
+  description String
+  banner String?
+  category String
+  organizerId String
+  venue String
+  location String
+  startDate DateTime
+  endDate DateTime
+  registrationDeadline DateTime?
+  maxParticipants Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  participants EventParticipant[]
+  @@index([startDate, category])
+}
+
+model EventParticipant {
+  eventId String
+  userId String
+  status EventParticipantStatus @default(REGISTERED)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@id([eventId, userId])
+}
+
+model Opportunity {
+  id String @id @default(cuid())
+  title String
+  organization String
+  description String
+  type OpportunityType
+  location String
+  applicationUrl String
+  deadline DateTime?
+  image String?
+  createdBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([type, deadline])
+}
+
+model Notification {
+  id String @id @default(cuid())
+  userId String
+  type NotificationType
+  title String
+  message String
+  data Json?
+  read Boolean @default(false)
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, read, createdAt])
+}
+
+model Conversation {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  members ConversationMember[]
+  messages Message[]
+}
+model ConversationMember {
+  conversationId String
+  userId String
+  joinedAt DateTime @default(now())
+  conversation Conversation @relation(fields:[conversationId],references:[id],onDelete:Cascade)
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  @@id([conversationId,userId])
+}
+model Message {
+  id String @id @default(cuid())
+  conversationId String
+  senderId String
+  content String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  readAt DateTime?
+  conversation Conversation @relation(fields:[conversationId],references:[id],onDelete:Cascade)
+  sender User @relation(fields:[senderId],references:[id],onDelete:Cascade)
+  @@index([conversationId,createdAt])
+}

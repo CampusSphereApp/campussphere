@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Join CampusSphere</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="auth.css">
+<link rel="stylesheet" href="google-auth.css">
+<script defer src="api.js?v=google-auth-1">
+</script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script defer src="auth.js?v=google-auth-1">
+</script>
+</head>
+<body>
+<main class="auth-shell signup">
+<section class="auth-panel">
+<a class="brand" href="index.html">
+<b>C</b>CampusSphere</a>
+<div class="form-wrap">
+<h1>Find your campus circle.</h1>
+<p>Create your profile and start exploring.</p>
+<div class="google-auth" data-google-auth aria-label="Continue with Google"></div>
+<div class="divider">OR SIGN UP WITH EMAIL</div>
+<form id="signup-form" novalidate>
+<p class="auth-error" id="auth-error" role="alert" aria-live="polite" hidden></p>
+<label>Full name<input id="signup-name" name="fullName" type="text" placeholder="Your full name" autocomplete="name" required>
+</label>
+<label>College email<input id="signup-email" name="email" type="email" placeholder="you@university.edu" autocomplete="email" required>
+<span class="field-error">Enter a valid college email address.</span>
+</label>
+<label class="password-label">Create password<input id="signup-password" name="password" type="password" placeholder="At least 8 characters" minlength="8" autocomplete="new-password" required>
+<button class="show-password" type="button" data-password-toggle>Show</button>
+</label>
+<div class="two-col">
+<label>College / university<select id="signup-college" name="college" required>
+<option value="">Select college</option>
+<option>Northstar University</option>
+<option>Springfield College</option>
+<option>Horizon Institute</option>
+</select>
+</label>
+<label>Course<input id="signup-course" name="course" type="text" placeholder="e.g. Computer Science" required>
+</label>
+</div>
+<div class="two-col">
+<label>Year<select id="signup-year" name="year" required>
+<option value="">Select year</option>
+<option>1st year</option>
+<option>2nd year</option>
+<option>3rd year</option>
+<option>4th year</option>
+</select>
+</label>
+<label>Interests</label>
+</div>
+<div class="interest-group" aria-label="Select interests">
+<button type="button">Technology</button>
+<button type="button">Design</button>
+<button type="button">Business</button>
+<button type="button">Sports</button>
+<button type="button">Music</button>
+</div>
+<label class="check">
+<input type="checkbox" required>I agree to the Terms and Privacy Policy</label>
+<button class="submit" type="submit">Create my account →</button>
+</form>
+<p class="bottom-link">Already have an account? <a href="login.html">Log in</a>
+</p>
+</div>
+</section>
+<aside class="auth-visual">
+<div class="orbit o1">
+</div>
+<div class="orbit o2">
+</div>
+<div class="visual-top">
+<span>Endless possibilities.</span>
+<span>✦</span>
+</div>
+<div class="visual-copy">
+<p>YOUR NEXT CHAPTER STARTS HERE</p>
+<h2>Find people<br>who <i>get you.</i>
+</h2>
+<span>From ideas and teammates to events and communities, it all starts here.</span>
+</div>
+<div class="visual-card">
+<p>Join 2,000+ students discovering what's next on their campus.</p>
+<div class="mini-students">
+<img src="https://i.pravatar.cc/64?img=12" alt="Student">
+<img src="https://i.pravatar.cc/64?img=32" alt="Student">
+<img src="https://i.pravatar.cc/64?img=14" alt="Student">
+<span>✦</span>
+</div>
+</div>
+</aside>
+</main>
+</body>
+</html>
