@@ -1,0 +1,22 @@
+import './current-user.js?v=academic-foundation-1';
+import { api, escapeHtml, requireRole } from './frontend-api.js?v=academic-foundation-1';
+
+const attendanceStyles = document.createElement('link'); attendanceStyles.rel = 'stylesheet'; attendanceStyles.href = 'attendance.css'; document.head.append(attendanceStyles);
+
+const user = await requireRole('STUDENT');
+if (user) {
+  document.querySelector('[data-academic-name]').textContent = user.fullName;
+  const overview = await api('/academic/me');
+  document.querySelector('#academic-college').textContent = overview.academicCollege?.name || overview.studentEnrollments[0]?.classSection.program.department.college.name || 'Not linked';
+  document.querySelector('#academic-program').textContent = overview.academicProgram?.name || overview.studentEnrollments[0]?.classSection.program.name || 'Not linked';
+  document.querySelector('#academic-class-count').textContent = String(overview.studentEnrollments.length);
+  const assignments = overview.studentEnrollments.flatMap(({ classSection }) => classSection.teachingAssignments.map((assignment) => ({ ...assignment, classSection })));
+  document.querySelector('#student-subjects').innerHTML = assignments.length ? assignments.map(({ subject, teacher, classSection }) => `<article class="assignment"><b>${escapeHtml(subject.code)} · ${escapeHtml(subject.name)}</b><small>${escapeHtml(classSection.name)} · ${escapeHtml(teacher.fullName)}</small></article>`).join('') : '<div class="empty-state"><b>No subjects assigned yet</b><p>Your subjects will appear when your institution enrolls you in a class section.</p></div>';
+  const attendance = await api('/academic/attendance/summary');
+  const attendanceCard = [...document.querySelectorAll('.academic-card')].find((card) => card.querySelector('h2')?.textContent === 'Attendance');
+  if (attendanceCard) attendanceCard.innerHTML = `<div class="card-head"><h2>Attendance</h2><span class="indicator ${attendance.overall.indicator}">${attendance.overall.percentage}% overall</span></div>${attendance.subjects.length ? `<div class="assignment-list">${attendance.subjects.map((item) => `<button type="button" class="assignment attendance-subject" data-subject="${item.subject.id}"><b>${escapeHtml(item.subject.name)}</b><small>${item.present} present · ${item.absent} absent · ${item.total} lectures</small><span class="indicator ${item.indicator}">${item.percentage}%</span></button>`).join('')}</div><div id="attendance-detail"></div>` : '<div class="empty-state"><b>No attendance records yet</b><p>Your attendance will appear after a teacher submits a lecture for one of your enrolled subjects.</p></div>'}`;
+  attendanceCard?.addEventListener('click', async (event) => { const button = event.target.closest('[data-subject]'); if (!button) return; const detail = await api(`/academic/attendance/subjects/${button.dataset.subject}`); document.querySelector('#attendance-detail').innerHTML = `<div class="assignment" style="margin-top:14px"><b>${escapeHtml(detail.subject.name)} · ${detail.percentage}%</b><small>${escapeHtml(detail.teacher.fullName)} · ${detail.present} present · ${detail.absent} absent · ${detail.total} total</small>${detail.history.slice(0,10).map((record)=>`<small>${new Date(record.startsAt).toLocaleDateString()} — ${escapeHtml(record.status)}</small>`).join('')}</div>`; });
+  const timetable = await api('/academic/timetable');
+  document.querySelector('.academic-grid').insertAdjacentHTML('beforeend', `<article class="academic-card wide"><div class="card-head"><h2>Timetable</h2><span>Weekly schedule</span></div>${timetable.length ? `<div class="assignment-list">${timetable.map((entry)=>`<article class="assignment"><b>${escapeHtml(entry.day)} · ${String(Math.floor(entry.startMinutes/60)).padStart(2,'0')}:${String(entry.startMinutes%60).padStart(2,'0')}–${String(Math.floor(entry.endMinutes/60)).padStart(2,'0')}:${String(entry.endMinutes%60).padStart(2,'0')}</b><small>${escapeHtml(entry.teachingAssignment.subject.name)} · ${escapeHtml(entry.teachingAssignment.classSection.name)} · ${escapeHtml(entry.room||'Room not set')} · ${escapeHtml(entry.teachingAssignment.teacher.fullName)}</small></article>`).join('')}</div>` : '<div class="empty-state"><b>No timetable entries yet.</b><p>Published lectures for your enrolled classes will appear here.</p></div>'}</article>`);
+  document.querySelector('.mobile-academic-menu').addEventListener('click', () => document.querySelector('.academic-sidebar').classList.toggle('open'));
+}

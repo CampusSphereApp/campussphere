@@ -8,7 +8,8 @@ const schema = z.object({
   JWT_SECRET: z.string().min(32),
   JWT_REFRESH_SECRET: z.string().min(32),
   FRONTEND_URL: z.string().url(),
-  GOOGLE_CLIENT_ID: z.string().min(1)
+  GOOGLE_CLIENT_ID: z.string().min(1),
+  DEV_ROLE_ASSIGNMENT_KEY: z.string().min(32).optional().or(z.literal(''))
 });
 
 const parsed = schema.safeParse(process.env);

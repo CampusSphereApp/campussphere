@@ -1,10 +1,11 @@
 import { Router } from 'express';
+import { UserRole } from '@prisma/client';
 import { prisma } from '../config/prisma.js';
-import { authenticate } from '../middleware/authenticate.js';
+import { authenticate, authorizeRoles } from '../middleware/authenticate.js';
 import { asyncHandler } from '../utils/async-handler.js';
 
 export const dashboardRouter = Router();
-dashboardRouter.get('/', authenticate, asyncHandler(async (req, res) => {
+dashboardRouter.get('/', authenticate, authorizeRoles(UserRole.STUDENT), asyncHandler(async (req, res) => {
   const now = new Date();
   const [user, events, projects, communities, unreadNotifications, recentActivity] = await Promise.all([
     prisma.user.findUnique({ where: { id: req.auth!.sub }, select: { id: true, fullName: true, avatar: true, college: true, course: true } }),

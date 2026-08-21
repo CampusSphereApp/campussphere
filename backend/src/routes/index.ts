@@ -12,6 +12,7 @@ import { notificationRouter } from './notification.routes.js';
 import { conversationRouter } from './conversation.routes.js';
 import { searchRouter } from './search.routes.js';
 import { dashboardRouter } from './dashboard.routes.js';
+import { academicRouter } from './academic.routes.js';
 
 export const apiRouter = Router();
 apiRouter.use(healthRouter);
@@ -27,3 +28,4 @@ apiRouter.use('/v1/notifications', notificationRouter);
 apiRouter.use('/v1/conversations', conversationRouter);
 apiRouter.use('/v1/search', searchRouter);
 apiRouter.use('/v1/dashboard', dashboardRouter);
+apiRouter.use('/v1/academic', academicRouter);

@@ -22,6 +22,9 @@ All product routes are under `/api/v1`. Protected routes require an `Authorizati
 - `/events`, `/projects`, `/opportunities` - campus activities and discovery.
 - `/notifications`, `/conversations` - notification and persisted messaging APIs.
 - `/search`, `/dashboard` - grouped search and personalised dashboard data.
+- `/academic` - student academic enrollment data, assignment-scoped teacher data, admin summaries, and an optional development-only role assignment endpoint.
+
+New public accounts always receive the `STUDENT` role. To test teacher/admin routing locally, set a private 32+ character `DEV_ROLE_ASSIGNMENT_KEY` and call the authenticated development endpoint with the matching `x-dev-role-key` header. The endpoint returns 404 in production and when the key is not configured.
 
 ## Verification
 

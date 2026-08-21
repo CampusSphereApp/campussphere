@@ -1,4 +1,10 @@
 const initialiseAuthentication = () => {
+  const workspaceUrl = (role) => role === 'TEACHER' ? 'teacher-dashboard.html' : role === 'COLLEGE_ADMIN' ? 'college-admin.html' : role === 'ADMIN' ? 'admin.html' : 'dashboard.html';
+  const postAuthUrl = (role) => {
+    const next = new URLSearchParams(location.search).get('next');
+    if (!next) return workspaceUrl(role);
+    try { const target = new URL(next, location.href); return target.origin === location.origin ? target.href : workspaceUrl(role); } catch { return workspaceUrl(role); }
+  };
   document.querySelectorAll('[data-password-toggle]').forEach((button) => {
     button.addEventListener('click', () => {
       const input = button.closest('.password-label')?.querySelector('input[type="password"], input[type="text"]');
@@ -64,7 +70,7 @@ const initialiseAuthentication = () => {
               const response = await window.CampusSphereAPI.googleLogin(credential);
               if (!response?.accessToken) throw new Error('The server did not return a login token.');
               localStorage.setItem('campussphere_access_token', response.accessToken);
-              window.location.assign('dashboard.html');
+              window.location.assign(postAuthUrl(response.user?.role));
             } catch (error) {
               showError(error instanceof Error ? error.message : 'Unable to sign in with Google.');
             } finally { googleContainer.setAttribute('aria-busy', 'false'); }
@@ -140,7 +146,7 @@ const initialiseAuthentication = () => {
         : await window.CampusSphereAPI.login(email, password);
       if (!response?.accessToken) throw new Error('The server did not return a login token.');
       localStorage.setItem('campussphere_access_token', response.accessToken);
-      window.location.assign('dashboard.html');
+      window.location.assign(postAuthUrl(response.user?.role));
     } catch (error) {
       showError(error instanceof Error ? error.message : 'Unable to reach CampusSphere. Please try again.');
     } finally {
