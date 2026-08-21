@@ -73,8 +73,11 @@ Configure these variables in `backend/.env`:
 | `JWT_REFRESH_SECRET` | Separate refresh-token signing secret, at least 32 characters |
 | `FRONTEND_URL` | Allowed frontend origin for CORS and Socket.IO |
 | `GOOGLE_CLIENT_ID` | Google OAuth Web Client ID used to verify Google ID tokens |
+| `DEV_ROLE_ASSIGNMENT_KEY` | Optional 32+ character key enabling the authenticated development-only role assignment endpoint; leave empty normally |
 
 Never commit `.env` files or place real credentials in `.env.example`.
+
+Public email/password and Google registration always rely on the database default `STUDENT` role. In non-production development only, a configured `DEV_ROLE_ASSIGNMENT_KEY` can authorize `PATCH /api/v1/academic/dev/users/:userId/role` through the `x-dev-role-key` header. This endpoint is unavailable in production and should never be exposed with a shared or committed key.
 
 ### Install and prepare Prisma
 

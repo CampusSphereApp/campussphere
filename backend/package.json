@@ -14,6 +14,7 @@
     "db:deploy": "prisma migrate deploy",
     "db:seed": "node prisma/seed.mjs",
     "db:reset": "prisma migrate reset"
+    ,"admin:assign-college-admin": "node scripts/assign-college-admin.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.7.0",

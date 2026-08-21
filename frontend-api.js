@@ -3,6 +3,8 @@ const API_BASE = `${apiHost}/api/v1`;
 const accessTokenKey = 'campussphere_access_token';
 let currentUserPromise = null;
 
+export const workspaceUrl = (role) => role === 'TEACHER' ? 'teacher-dashboard.html' : role === 'COLLEGE_ADMIN' ? 'college-admin.html' : role === 'ADMIN' ? 'admin.html' : 'dashboard.html';
+
 export const escapeHtml = (value = '') => String(value).replace(/[&<>'"]/g, (character) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
 })[character]);
@@ -68,6 +70,13 @@ export async function requireAuthentication() {
   if (await restoreSession()) return true;
   window.location.assign('login.html');
   return false;
+}
+
+export async function requireRole(...allowedRoles) {
+  const user = await restoreSession();
+  if (!user) { window.location.assign('login.html'); return null; }
+  if (!allowedRoles.includes(user.role)) { window.location.assign(workspaceUrl(user.role)); return null; }
+  return user;
 }
 
 export async function logout() {

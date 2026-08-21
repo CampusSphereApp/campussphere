@@ -14,6 +14,61 @@ enum UserYear {
   FOURTH
   POSTGRADUATE
 }
+enum UserRole {
+  STUDENT
+  TEACHER
+  COLLEGE_ADMIN
+  ADMIN
+}
+enum InstitutionStatus {
+  ACTIVE
+  INACTIVE
+}
+enum InstitutionInvitationRole {
+  TEACHER
+  STUDENT
+}
+enum InstitutionInvitationStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  EXPIRED
+}
+enum AcademicPeriodStatus {
+  UPCOMING
+  ACTIVE
+  COMPLETED
+}
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  WITHDRAWN
+}
+enum AttendanceSessionStatus {
+  DRAFT
+  SUBMITTED
+}
+enum AttendanceRecordStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+}
+enum Weekday {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+enum LectureType {
+  LECTURE
+  LAB
+  TUTORIAL
+  SEMINAR
+}
 enum ConnectionStatus {
   PENDING
   ACCEPTED
@@ -84,6 +139,7 @@ model User {
   email String @unique
   passwordHash String
   googleSub String? @unique
+  role UserRole @default(STUDENT)
   avatar String?
   bio String?
   college String?
@@ -91,6 +147,9 @@ model User {
   year UserYear?
   location String?
   refreshTokenHash String?
+  collegeId String?
+  departmentId String?
+  academicProgramId String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   skills UserSkill[]
@@ -109,7 +168,252 @@ model User {
   likes PostLike[]
   conversationMemberships ConversationMember[]
   sentMessages Message[]
+  academicCollege College? @relation(fields: [collegeId], references: [id], onDelete: SetNull)
+  academicDepartment Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  academicProgram AcademicProgram? @relation(fields: [academicProgramId], references: [id], onDelete: SetNull)
+  studentEnrollments StudentEnrollment[] @relation("StudentEnrollments")
+  teachingAssignments TeachingAssignment[] @relation("TeacherAssignments")
+  attendanceRecords AttendanceRecord[] @relation("StudentAttendanceRecords")
+  createdSubjects Subject[] @relation("TeacherCreatedSubjects")
+  createdClassSections ClassSection[] @relation("TeacherCreatedSections")
+  classAccess TeacherClassAccess[] @relation("TeacherClassAccess")
+  institutionInvitationsSent InstitutionInvitation[] @relation("InstitutionInviter")
   @@index([college, course])
+  @@index([role])
+  @@index([collegeId, departmentId, academicProgramId])
+}
+
+model College {
+  id String @id @default(cuid())
+  name String @unique
+  code String? @unique
+  slug String @unique
+  shortName String
+  city String?
+  state String?
+  country String?
+  status InstitutionStatus @default(INACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  departments Department[]
+  academicYears AcademicYear[]
+  terms AcademicTerm[]
+  users User[]
+  invitations InstitutionInvitation[]
+}
+
+model InstitutionInvitation {
+  id String @id @default(cuid())
+  collegeId String
+  email String
+  role InstitutionInvitationRole
+  tokenHash String @unique
+  status InstitutionInvitationStatus @default(PENDING)
+  expiresAt DateTime
+  acceptedAt DateTime?
+  invitedById String
+  departmentId String?
+  academicProgramId String?
+  classSectionId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  college College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  invitedBy User @relation("InstitutionInviter", fields: [invitedById], references: [id], onDelete: Restrict)
+  department Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  academicProgram AcademicProgram? @relation(fields: [academicProgramId], references: [id], onDelete: SetNull)
+  classSection ClassSection? @relation(fields: [classSectionId], references: [id], onDelete: SetNull)
+  @@index([collegeId, status, role])
+  @@index([email, status])
+}
+
+model Department {
+  id String @id @default(cuid())
+  collegeId String
+  name String
+  code String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  college College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  programs AcademicProgram[]
+  subjects Subject[]
+  users User[]
+  invitations InstitutionInvitation[]
+  @@unique([collegeId, name])
+  @@unique([collegeId, code])
+}
+
+model AcademicProgram {
+  id String @id @default(cuid())
+  departmentId String
+  name String
+  code String?
+  durationYears Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  department Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  classSections ClassSection[]
+  users User[]
+  invitations InstitutionInvitation[]
+  @@unique([departmentId, name])
+  @@unique([departmentId, code])
+}
+
+model AcademicYear {
+  id String @id @default(cuid())
+  collegeId String
+  name String
+  startsAt DateTime
+  endsAt DateTime
+  status AcademicPeriodStatus @default(UPCOMING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  college College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  terms AcademicTerm[]
+  @@unique([collegeId, name])
+  @@index([collegeId, status])
+}
+
+model AcademicTerm {
+  id String @id @default(cuid())
+  collegeId String
+  academicYearId String?
+  name String
+  code String?
+  startsAt DateTime
+  endsAt DateTime
+  isActive Boolean @default(false)
+  status AcademicPeriodStatus @default(UPCOMING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  college College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  academicYear AcademicYear? @relation(fields: [academicYearId], references: [id], onDelete: Restrict)
+  classSections ClassSection[]
+  @@unique([academicYearId, name])
+  @@unique([academicYearId, code])
+  @@index([collegeId, isActive])
+  @@index([collegeId, status])
+}
+
+model ClassSection {
+  id String @id @default(cuid())
+  programId String
+  termId String
+  name String
+  yearLevel Int?
+  semester Int?
+  createdByTeacherId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  program AcademicProgram @relation(fields: [programId], references: [id], onDelete: Cascade)
+  term AcademicTerm @relation(fields: [termId], references: [id], onDelete: Cascade)
+  enrollments StudentEnrollment[]
+  teachingAssignments TeachingAssignment[]
+  createdByTeacher User? @relation("TeacherCreatedSections", fields: [createdByTeacherId], references: [id], onDelete: SetNull)
+  teacherAccess TeacherClassAccess[]
+  invitations InstitutionInvitation[]
+  @@unique([programId, termId, name])
+  @@index([termId])
+}
+
+model Subject {
+  id String @id @default(cuid())
+  departmentId String
+  code String
+  name String
+  description String?
+  credits Int?
+  createdByTeacherId String?
+  archivedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  department Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  teachingAssignments TeachingAssignment[]
+  createdByTeacher User? @relation("TeacherCreatedSubjects", fields: [createdByTeacherId], references: [id], onDelete: SetNull)
+  @@unique([departmentId, code])
+  @@index([departmentId, name])
+}
+
+model StudentEnrollment {
+  id String @id @default(cuid())
+  studentId String
+  classSectionId String
+  status EnrollmentStatus @default(ACTIVE)
+  enrolledAt DateTime @default(now())
+  completedAt DateTime?
+  student User @relation("StudentEnrollments", fields: [studentId], references: [id], onDelete: Cascade)
+  classSection ClassSection @relation(fields: [classSectionId], references: [id], onDelete: Cascade)
+  @@unique([studentId, classSectionId])
+  @@index([classSectionId, status])
+}
+
+model TeachingAssignment {
+  id String @id @default(cuid())
+  teacherId String
+  subjectId String
+  classSectionId String
+  assignedAt DateTime @default(now())
+  teacher User @relation("TeacherAssignments", fields: [teacherId], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  classSection ClassSection @relation(fields: [classSectionId], references: [id], onDelete: Cascade)
+  attendanceSessions AttendanceSession[]
+  timetableEntries TimetableEntry[]
+  @@unique([teacherId, subjectId, classSectionId])
+  @@index([classSectionId, subjectId])
+}
+
+model TeacherClassAccess {
+  teacherId String
+  classSectionId String
+  canManage Boolean @default(true)
+  grantedAt DateTime @default(now())
+  teacher User @relation("TeacherClassAccess", fields: [teacherId], references: [id], onDelete: Cascade)
+  classSection ClassSection @relation(fields: [classSectionId], references: [id], onDelete: Cascade)
+  @@id([teacherId, classSectionId])
+  @@index([classSectionId])
+}
+
+model TimetableEntry {
+  id String @id @default(cuid())
+  teachingAssignmentId String
+  day Weekday
+  startMinutes Int
+  endMinutes Int
+  room String?
+  lectureType LectureType @default(LECTURE)
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  teachingAssignment TeachingAssignment @relation(fields: [teachingAssignmentId], references: [id], onDelete: Cascade)
+  @@index([teachingAssignmentId, day, startMinutes])
+}
+
+model AttendanceSession {
+  id String @id @default(cuid())
+  teachingAssignmentId String
+  clientRequestId String @unique
+  startsAt DateTime
+  endsAt DateTime?
+  status AttendanceSessionStatus @default(SUBMITTED)
+  notes String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  teachingAssignment TeachingAssignment @relation(fields: [teachingAssignmentId], references: [id], onDelete: Cascade)
+  records AttendanceRecord[]
+  @@unique([teachingAssignmentId, startsAt])
+  @@index([teachingAssignmentId, startsAt])
+}
+
+model AttendanceRecord {
+  id String @id @default(cuid())
+  attendanceSessionId String
+  studentId String
+  status AttendanceRecordStatus
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  attendanceSession AttendanceSession @relation(fields: [attendanceSessionId], references: [id], onDelete: Cascade)
+  student User @relation("StudentAttendanceRecords", fields: [studentId], references: [id], onDelete: Cascade)
+  @@unique([attendanceSessionId, studentId])
+  @@index([studentId, status])
 }
 
 model Skill {

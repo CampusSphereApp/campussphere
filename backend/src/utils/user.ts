@@ -1,5 +1,5 @@
 import type { Prisma, User } from '@prisma/client';
-export const publicUser = (user: User) => ({ id: user.id, fullName: user.fullName, avatar: user.avatar, bio: user.bio, college: user.college, course: user.course, year: user.year, location: user.location, createdAt: user.createdAt, updatedAt: user.updatedAt });
+export const publicUser = (user: User) => ({ id: user.id, fullName: user.fullName, role: user.role, avatar: user.avatar, bio: user.bio, college: user.college, course: user.course, year: user.year, location: user.location, createdAt: user.createdAt, updatedAt: user.updatedAt });
 
 export const profileInclude = {
   skills: { include: { skill: true } },
