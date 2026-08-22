@@ -25,6 +25,9 @@ export const register: RequestHandler = asyncHandler(async (req, res) => {
   const { password, interests, ...profile } = body;
   const user = await prisma.user.create({ data: {
     ...profile,
+    // Public signup is intentionally limited to student accounts. Staff roles are
+    // assigned only through the institution/admin workflow.
+    role: 'STUDENT',
     passwordHash: await bcrypt.hash(password, 12),
     interests: interests.length ? { create: interests.map((name) => ({ interest: { connectOrCreate: { where: { name }, create: { name } } } })) } : undefined
   } });
