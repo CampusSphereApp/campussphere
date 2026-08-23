@@ -21,7 +21,10 @@ import {
   createInstitutionAcademicYear, updateInstitutionAcademicYear, updateInstitutionTerm,
   createInstitutionEnrollment, createInstitutionInvitation, createInstitutionProgram,
   createInstitutionSubject, createInstitutionTeacherAssignment, createInstitutionTerm,
-  institutionOverview
+  institutionOverview, previewStudentImport, commitStudentImport, institutionClassRoster,
+  withdrawInstitutionEnrollment, replaceClassTeacherAssignments, institutionClassOperations,
+  initializeInstitutionTimetableDraft, createInstitutionTimetableEntry,
+  updateInstitutionTimetableEntry, deleteInstitutionTimetableEntry, publishInstitutionTimetable
 } from '../controllers/institution.controller.js';
 
 export const academicRouter = Router();
@@ -46,9 +49,6 @@ academicRouter.post('/teacher/classes', authenticate, authorizeRoles(UserRole.TE
 academicRouter.get('/teacher/classes/:classSectionId/manage', authenticate, authorizeRoles(UserRole.TEACHER), teacherClassDetails);
 academicRouter.post('/teacher/classes/:classSectionId/subjects/:subjectId', authenticate, authorizeRoles(UserRole.TEACHER), assignTeacherSubject);
 academicRouter.get('/teacher/timetable', authenticate, authorizeRoles(UserRole.TEACHER), teacherTimetable);
-academicRouter.post('/teacher/timetable', authenticate, authorizeRoles(UserRole.TEACHER), createTimetableEntry);
-academicRouter.patch('/teacher/timetable/:entryId', authenticate, authorizeRoles(UserRole.TEACHER), updateTimetableEntry);
-academicRouter.delete('/teacher/timetable/:entryId', authenticate, authorizeRoles(UserRole.TEACHER), cancelTimetableEntry);
 academicRouter.get('/timetable', authenticate, authorizeRoles(UserRole.STUDENT), studentTimetable);
 academicRouter.get('/admin/overview', authenticate, authorizeRoles(UserRole.ADMIN), adminAcademicOverview);
 academicRouter.get('/institution/overview', authenticate, authorizeRoles(UserRole.COLLEGE_ADMIN), institutionOverview);
@@ -63,5 +63,16 @@ academicRouter.post('/institution/subjects', authenticate, authorizeRoles(UserRo
 academicRouter.post('/institution/invitations', authenticate, authorizeRoles(UserRole.COLLEGE_ADMIN), createInstitutionInvitation);
 academicRouter.post('/institution/teacher-assignments', authenticate, authorizeRoles(UserRole.COLLEGE_ADMIN), createInstitutionTeacherAssignment);
 academicRouter.post('/institution/enrollments', authenticate, authorizeRoles(UserRole.COLLEGE_ADMIN), createInstitutionEnrollment);
+academicRouter.post('/institution/student-import/preview', authenticate, authorizeRoles(UserRole.COLLEGE_ADMIN), previewStudentImport);
+academicRouter.post('/institution/student-import/commit', authenticate, authorizeRoles(UserRole.COLLEGE_ADMIN), commitStudentImport);
+academicRouter.get('/institution/classes/:classSectionId/roster', authenticate, authorizeRoles(UserRole.COLLEGE_ADMIN), institutionClassRoster);
+academicRouter.delete('/institution/classes/:classSectionId/enrollments/:enrollmentId', authenticate, authorizeRoles(UserRole.COLLEGE_ADMIN), withdrawInstitutionEnrollment);
+academicRouter.get('/institution/classes/:classSectionId/operations', authenticate, authorizeRoles(UserRole.COLLEGE_ADMIN), institutionClassOperations);
+academicRouter.put('/institution/classes/:classSectionId/teacher-assignments', authenticate, authorizeRoles(UserRole.COLLEGE_ADMIN), replaceClassTeacherAssignments);
+academicRouter.post('/institution/classes/:classSectionId/timetable/draft', authenticate, authorizeRoles(UserRole.COLLEGE_ADMIN), initializeInstitutionTimetableDraft);
+academicRouter.post('/institution/classes/:classSectionId/timetable/entries', authenticate, authorizeRoles(UserRole.COLLEGE_ADMIN), createInstitutionTimetableEntry);
+academicRouter.patch('/institution/classes/:classSectionId/timetable/entries/:entryId', authenticate, authorizeRoles(UserRole.COLLEGE_ADMIN), updateInstitutionTimetableEntry);
+academicRouter.delete('/institution/classes/:classSectionId/timetable/entries/:entryId', authenticate, authorizeRoles(UserRole.COLLEGE_ADMIN), deleteInstitutionTimetableEntry);
+academicRouter.post('/institution/classes/:classSectionId/timetable/publish', authenticate, authorizeRoles(UserRole.COLLEGE_ADMIN), publishInstitutionTimetable);
 academicRouter.post('/institution/invitations/accept', authenticate, acceptInstitutionInvitation);
 academicRouter.patch('/dev/users/:userId/role', authenticate, assignDevelopmentRole);

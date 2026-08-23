@@ -14,8 +14,8 @@ const present = async (item: any, userId: string) => {
     const actionable = Boolean(connection && connection.recipientId === userId && connection.status === ConnectionStatus.PENDING);
     return { ...item, actionable, resolved: !actionable, target: connection ? { kind: 'profile', userId: connection.requesterId } : null };
   }
-  const projectId = typeof data.projectId === 'string' ? data.projectId : null;
-  return { ...item, actionable: false, resolved: false, target: projectId ? { kind: 'project', projectId } : null };
+  const projectId = typeof data.projectId === 'string' ? data.projectId : null, opportunityId = typeof data.opportunityId === 'string' ? data.opportunityId : null;
+  return { ...item, actionable: false, resolved: false, target: opportunityId ? { kind: 'opportunity', opportunityId } : projectId ? { kind: 'project', projectId } : null };
 };
 notificationRouter.get('/', asyncHandler(async (req, res) => { const items = await prisma.notification.findMany({ where: { userId: req.auth!.sub }, orderBy: { createdAt: 'desc' }, take: 50 }); res.json({ success: true, data: await Promise.all(items.map((item) => present(item, req.auth!.sub)) ) }); }));
 notificationRouter.get('/unread-count', asyncHandler(async (req, res) => { const count = await prisma.notification.count({ where: { userId: req.auth!.sub, read: false } }); res.json({ success: true, data: { count } }); }));

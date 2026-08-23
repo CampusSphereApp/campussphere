@@ -9,6 +9,7 @@ import { asyncHandler } from '../utils/async-handler.js';
 import { clearRefreshCookie, createAccessToken, createRefreshToken, readCookie, setRefreshCookie, verifyRefreshToken } from '../utils/tokens.js';
 import { profileInclude, profileUser, publicUser } from '../utils/user.js';
 import { googleCredentialSchema, loginSchema, registerSchema } from '../validators/auth.validator.js';
+import { claimPendingEnrollments } from '../services/pending-enrollment.service.js';
 
 const googleClient = new OAuth2Client(env.GOOGLE_CLIENT_ID);
 
@@ -25,9 +26,6 @@ export const register: RequestHandler = asyncHandler(async (req, res) => {
   const { password, interests, ...profile } = body;
   const user = await prisma.user.create({ data: {
     ...profile,
-    // Public signup is intentionally limited to student accounts. Staff roles are
-    // assigned only through the institution/admin workflow.
-    role: 'STUDENT',
     passwordHash: await bcrypt.hash(password, 12),
     interests: interests.length ? { create: interests.map((name) => ({ interest: { connectOrCreate: { where: { name }, create: { name } } } })) } : undefined
   } });
@@ -65,7 +63,11 @@ export const googleLogin: RequestHandler = asyncHandler(async (req, res) => {
     if (user.googleSub && user.googleSub !== payload.sub) throw new AppError(409, 'GOOGLE_ACCOUNT_CONFLICT', 'This email is linked to a different Google account.');
     user = await prisma.user.update({ where: { id: user.id }, data: { googleSub: payload.sub, avatar: user.avatar || payload.picture || undefined } });
   } else {
-    user = await prisma.user.create({ data: { fullName: payload.name?.trim() || email.split('@')[0], email, googleSub: payload.sub, avatar: payload.picture || null, passwordHash: await bcrypt.hash(crypto.randomBytes(32).toString('hex'), 12) } });
+    user = await prisma.$transaction(async tx => {
+      const created = await tx.user.create({ data: { fullName: payload.name?.trim() || email.split('@')[0], email, googleSub: payload.sub, avatar: payload.picture || null, passwordHash: await bcrypt.hash(crypto.randomBytes(32).toString('hex'), 12) } });
+      await claimPendingEnrollments(tx, created.id, email);
+      return tx.user.findUniqueOrThrow({ where: { id: created.id } });
+    });
   }
   const accessToken = await authenticateResponse(user, res);
   res.json({ success: true, data: { user: publicUser(user), accessToken } });

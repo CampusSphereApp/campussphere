@@ -1,0 +1,1211 @@
+/* ============================================================
+   CAMPUSSPHERE CINEMATIC STORY
+   ============================================================ */
+
+:root {
+    --csx-purple: #7964ff;
+    --csx-purple-bright: #9b87ff;
+    --csx-purple-deep: #4d3bc7;
+
+    --csx-white: #ffffff;
+
+    --csx-dark: #060913;
+    --csx-dark-2: #0b0f20;
+
+    --csx-text-soft: rgba(255, 255, 255, 0.68);
+
+    --csx-nav-offset: 0px;
+}
+
+
+/* ============================================================
+   STORY CONTAINER
+   ============================================================ */
+
+.csx-story {
+    position: relative;
+
+    height: 600vh;
+
+    background: var(--csx-dark);
+}
+
+
+.csx-stage {
+    position: sticky;
+
+    top: var(--csx-nav-offset);
+
+    height: 100vh;
+
+    overflow: hidden;
+
+    isolation: isolate;
+
+    background: var(--csx-dark);
+}
+
+
+/* ============================================================
+   CINEMATIC IMAGES
+   ============================================================ */
+
+.csx-photo {
+    position: absolute;
+
+    inset: 0;
+
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+
+    will-change:
+        transform,
+        opacity;
+
+    transform-origin: center center;
+}
+
+
+.csx-arrival {
+    z-index: 1;
+
+    background-image:
+        linear-gradient(
+            90deg,
+            rgba(4, 7, 17, 0.88) 0%,
+            rgba(4, 7, 17, 0.55) 24%,
+            rgba(4, 7, 17, 0.10) 56%,
+            rgba(4, 7, 17, 0.24) 100%
+        ),
+        linear-gradient(
+            0deg,
+            rgba(5, 8, 18, 0.40),
+            transparent 40%
+        ),
+        url("assets/campus-story/campus-arrival.webp.png.png");
+}
+
+
+.csx-approach {
+    z-index: 2;
+
+    opacity: 0;
+
+    background-image:
+        linear-gradient(
+            90deg,
+            rgba(4, 7, 17, 0.72) 0%,
+            rgba(4, 7, 17, 0.34) 24%,
+            rgba(4, 7, 17, 0.08) 56%,
+            rgba(4, 7, 17, 0.22) 100%
+        ),
+        linear-gradient(
+            0deg,
+            rgba(5, 8, 18, 0.25),
+            transparent 40%
+        ),
+        url("assets/campus-story/campus-approach.webp.png.png");
+}
+
+
+.csx-entrance {
+    z-index: 3;
+
+    opacity: 0;
+
+    background-image:
+        radial-gradient(
+            circle at center,
+            rgba(114, 87, 255, 0.08),
+            rgba(4, 7, 17, 0.22) 70%
+        ),
+        linear-gradient(
+            90deg,
+            rgba(4, 7, 17, 0.40),
+            transparent 35%,
+            transparent 65%,
+            rgba(4, 7, 17, 0.40)
+        ),
+        url("assets/campus-story/campus-entrance.webp.png.png");
+}
+
+
+/* ============================================================
+   CINEMATIC OVERLAY
+   ============================================================ */
+
+.csx-vignette {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 8;
+
+    pointer-events: none;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            rgba(3, 5, 12, 0.55),
+            transparent 24%,
+            transparent 76%,
+            rgba(3, 5, 12, 0.32)
+        ),
+
+        linear-gradient(
+            0deg,
+            rgba(3, 5, 12, 0.38),
+            transparent 32%
+        );
+}
+
+
+/* ============================================================
+   LEFT PROGRESS RAIL
+   ============================================================ */
+
+.csx-progress {
+    position: absolute;
+
+    z-index: 50;
+
+    left: 0;
+    top: 0;
+
+    width: 168px;
+    height: 100%;
+
+    padding:
+        clamp(70px, 8vh, 100px)
+        20px
+        40px;
+
+    background:
+        rgba(5, 8, 17, 0.72);
+
+    border-right:
+        1px solid rgba(255, 255, 255, 0.08);
+
+    backdrop-filter:
+        blur(18px);
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+}
+
+
+.csx-progress-line {
+    position: absolute;
+
+    left: 34px;
+
+    top: 88px;
+
+    bottom: 62px;
+
+    width: 1px;
+
+    background:
+        rgba(255, 255, 255, 0.14);
+}
+
+
+.csx-progress-fill {
+    width: 1px;
+
+    height: 0%;
+
+    background:
+        linear-gradient(
+            180deg,
+            var(--csx-purple-bright),
+            var(--csx-purple)
+        );
+
+    box-shadow:
+        0 0 12px
+        rgba(121, 100, 255, 0.8);
+}
+
+
+.csx-step {
+    position: relative;
+
+    display: flex;
+
+    gap: 14px;
+
+    opacity: 0.40;
+
+    transition:
+        opacity 250ms ease,
+        transform 250ms ease;
+}
+
+
+.csx-step.is-active {
+    opacity: 1;
+
+    transform:
+        translateX(3px);
+}
+
+
+.csx-step > span {
+    position: relative;
+
+    z-index: 5;
+
+    flex: 0 0 auto;
+
+    width: 29px;
+    height: 29px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 50%;
+
+    border:
+        1px solid
+        rgba(142, 118, 255, 0.9);
+
+    background:
+        #090d19;
+
+    color: white;
+
+    font-size: 10px;
+
+    font-weight: 700;
+}
+
+
+.csx-step strong {
+    display: block;
+
+    margin-top: 3px;
+
+    color: white;
+
+    font-size: 13px;
+}
+
+
+.csx-step small {
+    display: block;
+
+    margin-top: 8px;
+
+    max-width: 90px;
+
+    color:
+        rgba(255, 255, 255, 0.55);
+
+    line-height: 1.55;
+
+    font-size: 9px;
+}
+
+
+/* ============================================================
+   INTRO
+   ============================================================ */
+
+.csx-intro {
+    position: absolute;
+
+    z-index: 20;
+
+    left:
+        max(220px, 14vw);
+
+    top: 28%;
+
+    max-width: 630px;
+}
+
+
+.csx-kicker {
+    display: inline-block;
+
+    margin-bottom: 20px;
+
+    color:
+        rgba(210, 201, 255, 0.78);
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.21em;
+}
+
+
+.csx-intro h1 {
+    margin: 0;
+
+    color: white;
+
+    font-size:
+        clamp(52px, 5.8vw, 92px);
+
+    line-height: 0.96;
+
+    letter-spacing:
+        -0.052em;
+
+    text-shadow:
+        0 15px 60px rgba(0, 0, 0, 0.36);
+}
+
+
+.csx-intro h1 em {
+    color:
+        var(--csx-purple-bright);
+
+    font-style: normal;
+}
+
+
+.csx-intro p {
+    max-width: 520px;
+
+    margin: 26px 0 0;
+
+    color:
+        rgba(255, 255, 255, 0.72);
+
+    font-size: 17px;
+
+    line-height: 1.6;
+}
+
+
+/* ============================================================
+   APPROACH COPY
+   ============================================================ */
+
+.csx-approach-copy {
+    position: absolute;
+
+    z-index: 22;
+
+    left:
+        max(220px, 14vw);
+
+    bottom: 12%;
+
+    opacity: 0;
+
+    transform:
+        translateY(30px);
+}
+
+
+.csx-approach-copy span {
+    color:
+        var(--csx-purple-bright);
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.22em;
+}
+
+
+.csx-approach-copy h2 {
+    margin: 12px 0 0;
+
+    color: white;
+
+    font-size:
+        clamp(30px, 3vw, 50px);
+
+    line-height: 1.06;
+
+    letter-spacing:
+        -0.035em;
+}
+
+
+/* ============================================================
+   ENTRANCE PORTAL
+   ============================================================ */
+
+.csx-portal {
+    position: absolute;
+
+    z-index: 30;
+
+    left: 50%;
+    top: 52%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width:
+        min(240px, 18vw);
+
+    height:
+        min(430px, 54vh);
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+
+.csx-portal-core {
+    position: absolute;
+
+    inset: 0;
+
+    border-radius:
+        50% 50% 12% 12%;
+
+    background:
+
+        radial-gradient(
+            ellipse at center,
+            white 0%,
+            #d8d0ff 15%,
+            #9d88ff 32%,
+            rgba(94, 66, 255, 0.50) 52%,
+            transparent 75%
+        );
+
+    filter:
+        blur(12px);
+
+    transform:
+        scaleX(0.15);
+}
+
+
+.csx-portal-halo {
+    position: absolute;
+
+    inset: -80px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(147, 124, 255, 0.35),
+            transparent 68%
+        );
+
+    filter:
+        blur(30px);
+
+    opacity: 0;
+}
+
+
+/* ============================================================
+   DIGITAL WORLD
+   ============================================================ */
+
+.csx-digital-world {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 15;
+
+    opacity: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            180deg,
+            #0a0d1c,
+            #0c0b22
+        );
+}
+
+
+.csx-digital-bg {
+    position: absolute;
+
+    inset: 0;
+
+    background:
+
+        radial-gradient(
+            circle at center,
+            rgba(111, 75, 255, 0.34),
+            rgba(27, 17, 73, 0.14) 38%,
+            transparent 65%
+        ),
+
+        radial-gradient(
+            circle at 50% 100%,
+            rgba(98, 66, 255, 0.18),
+            transparent 46%
+        );
+}
+
+
+/* ============================================================
+   PEOPLE SILHOUETTES
+   ============================================================ */
+
+.csx-person {
+    position: absolute;
+
+    z-index: 4;
+
+    bottom: 0;
+
+    width: 50px;
+    height: 170px;
+
+    border-radius:
+        25px 25px 4px 4px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(3, 6, 15, 0.82),
+            rgba(2, 4, 11, 0.98)
+        );
+
+    filter:
+        drop-shadow(
+            0 0 18px rgba(92, 62, 255, 0.08)
+        );
+}
+
+
+.csx-person::before {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+
+    top: -34px;
+
+    transform:
+        translateX(-50%);
+
+    width: 46px;
+    height: 46px;
+
+    border-radius: 50%;
+
+    background: #070911;
+}
+
+
+.csx-person-one {
+    left: 13%;
+
+    transform:
+        scale(1.05);
+}
+
+
+.csx-person-two {
+    left: 22%;
+
+    transform:
+        scale(0.82);
+}
+
+
+.csx-person-three {
+    right: 13%;
+
+    transform:
+        scale(1.08);
+}
+
+
+.csx-person-four {
+    right: 23%;
+
+    transform:
+        scale(0.78);
+}
+
+
+/* ============================================================
+   CORE
+   ============================================================ */
+
+.csx-core {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 260px;
+    height: 260px;
+
+    transform:
+        translate(-50%, -50%);
+
+    display: grid;
+
+    place-items: center;
+}
+
+
+.csx-sphere {
+    position: relative;
+
+    z-index: 10;
+
+    width: 205px;
+    height: 205px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 50%;
+
+    background:
+
+        radial-gradient(
+            circle at 35% 28%,
+            #d5ccff 0%,
+            #9d88ff 20%,
+            #7557ff 45%,
+            #5033d6 74%,
+            #2c1d82 100%
+        );
+
+    box-shadow:
+
+        0 0 40px
+        rgba(135, 105, 255, 0.78),
+
+        0 0 130px
+        rgba(109, 70, 255, 0.42),
+
+        inset
+        0 0 40px
+        rgba(255, 255, 255, 0.26);
+}
+
+
+.csx-sphere span {
+    color: white;
+
+    font-size: 44px;
+
+    font-weight: 800;
+
+    letter-spacing:
+        -0.05em;
+}
+
+
+.csx-orbit {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    border-radius: 50%;
+
+    border:
+        1px solid
+        rgba(154, 130, 255, 0.48);
+
+    transform:
+        translate(-50%, -50%);
+}
+
+
+.csx-orbit-1 {
+    width: 310px;
+    height: 310px;
+}
+
+
+.csx-orbit-2 {
+    width: 430px;
+    height: 230px;
+
+    transform:
+        translate(-50%, -50%)
+        rotate(-12deg);
+}
+
+
+.csx-orbit-3 {
+    width: 540px;
+    height: 360px;
+
+    opacity: 0.32;
+}
+
+
+/* ============================================================
+   FEATURE CARDS
+   ============================================================ */
+
+.csx-feature {
+    position: absolute;
+
+    z-index: 12;
+
+    width: 235px;
+
+    padding: 19px;
+
+    display: flex;
+
+    gap: 14px;
+
+    border-radius: 18px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.10);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(112, 87, 222, 0.42),
+            rgba(52, 43, 112, 0.32)
+        );
+
+    backdrop-filter:
+        blur(22px);
+
+    box-shadow:
+        0 20px 60px
+        rgba(0, 0, 0, 0.25);
+
+    opacity: 0;
+}
+
+
+.csx-feature-icon {
+    flex: 0 0 auto;
+
+    width: 38px;
+    height: 38px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 11px;
+
+    background:
+        rgba(166, 143, 255, 0.20);
+
+    color:
+        #dcd5ff;
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+
+.csx-feature strong {
+    display: block;
+
+    color: white;
+
+    font-size: 15px;
+}
+
+
+.csx-feature p {
+    margin: 7px 0 11px;
+
+    color:
+        rgba(255, 255, 255, 0.62);
+
+    font-size: 11px;
+
+    line-height: 1.45;
+}
+
+
+.csx-feature > div > span {
+    color:
+        rgba(255, 255, 255, 0.82);
+
+    font-size: 10px;
+}
+
+
+.csx-feature-academics {
+    left: calc(50% - 390px);
+    top: calc(50% - 190px);
+}
+
+
+.csx-feature-opportunities {
+    right: calc(50% - 390px);
+    top: calc(50% - 190px);
+}
+
+
+.csx-feature-community {
+    left: calc(50% - 410px);
+    bottom: calc(50% - 200px);
+}
+
+
+.csx-feature-projects {
+    right: calc(50% - 410px);
+    bottom: calc(50% - 200px);
+}
+
+
+/* ============================================================
+   FINAL / BEYOND
+   ============================================================ */
+
+.csx-beyond {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 45;
+
+    opacity: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    background:
+
+        radial-gradient(
+            circle at center,
+            rgba(82, 53, 195, 0.18),
+            transparent 44%
+        ),
+
+        #070a16;
+}
+
+
+.csx-beyond > span {
+    position: relative;
+
+    z-index: 5;
+
+    color:
+        #9f8cff;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing:
+        0.24em;
+}
+
+
+.csx-beyond h2 {
+    position: relative;
+
+    z-index: 5;
+
+    margin: 20px 20px 0;
+
+    color: white;
+
+    font-size:
+        clamp(47px, 6vw, 88px);
+
+    line-height: 0.98;
+
+    letter-spacing:
+        -0.055em;
+}
+
+
+.csx-beyond h2 em {
+    color:
+        var(--csx-purple-bright);
+
+    font-style: normal;
+}
+
+
+.csx-final-rings {
+    position: absolute;
+
+    width: 950px;
+    height: 350px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid
+        rgba(121, 100, 255, 0.13);
+
+    transform:
+        perspective(600px)
+        rotateX(70deg);
+}
+
+
+.csx-final-rings::before,
+.csx-final-rings::after {
+    content: "";
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    border:
+        1px solid
+        rgba(121, 100, 255, 0.11);
+}
+
+
+.csx-final-rings::before {
+    inset: 55px 110px;
+}
+
+
+.csx-final-rings::after {
+    inset: 110px 220px;
+}
+
+
+/* ============================================================
+   SCROLL INDICATOR
+   ============================================================ */
+
+.csx-scroll {
+    position: absolute;
+
+    z-index: 55;
+
+    right: 42px;
+    bottom: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    color:
+        rgba(255, 255, 255, 0.76);
+}
+
+
+.csx-mouse {
+    position: relative;
+
+    width: 23px;
+    height: 38px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.72);
+
+    border-radius: 15px;
+}
+
+
+.csx-mouse span {
+    position: absolute;
+
+    left: 50%;
+    top: 8px;
+
+    transform:
+        translateX(-50%);
+
+    width: 2px;
+    height: 7px;
+
+    border-radius: 99px;
+
+    background: white;
+
+    animation:
+        csx-wheel 1.5s ease-in-out infinite;
+}
+
+
+.csx-scroll small {
+    font-size: 11px;
+}
+
+
+@keyframes csx-wheel {
+
+    0% {
+        opacity: 0;
+        transform:
+            translate(-50%, 0);
+    }
+
+    40% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(-50%, 10px);
+    }
+
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1000px) {
+
+    .csx-progress {
+        width: 120px;
+
+        padding-left: 14px;
+        padding-right: 12px;
+    }
+
+    .csx-step small {
+        display: none;
+    }
+
+    .csx-intro,
+    .csx-approach-copy {
+        left: 160px;
+    }
+
+    .csx-feature {
+        width: 190px;
+    }
+
+    .csx-feature-academics {
+        left: 12%;
+    }
+
+    .csx-feature-opportunities {
+        right: 12%;
+    }
+
+    .csx-feature-community {
+        left: 10%;
+    }
+
+    .csx-feature-projects {
+        right: 10%;
+    }
+
+}
+
+
+@media (max-width: 760px) {
+
+    .csx-story {
+        height: 500vh;
+    }
+
+    .csx-progress {
+        display: none;
+    }
+
+    .csx-intro {
+        left: 24px;
+        right: 24px;
+        top: 25%;
+    }
+
+    .csx-intro h1 {
+        font-size:
+            clamp(46px, 14vw, 70px);
+    }
+
+    .csx-approach-copy {
+        left: 24px;
+        right: 24px;
+    }
+
+    .csx-core {
+        transform:
+            translate(-50%, -50%)
+            scale(0.72);
+    }
+
+    .csx-feature {
+        width: 165px;
+        padding: 14px;
+    }
+
+    .csx-feature p {
+        display: none;
+    }
+
+    .csx-feature-academics {
+        left: 10px;
+        top: 23%;
+    }
+
+    .csx-feature-opportunities {
+        right: 10px;
+        top: 23%;
+    }
+
+    .csx-feature-community {
+        left: 10px;
+        bottom: 20%;
+    }
+
+    .csx-feature-projects {
+        right: 10px;
+        bottom: 20%;
+    }
+
+    .csx-person {
+        opacity: 0.35;
+    }
+
+    .csx-scroll {
+        right: 20px;
+        bottom: 24px;
+    }
+
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+    .csx-mouse span {
+        animation: none;
+    }
+
+}
