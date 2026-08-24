@@ -64,7 +64,7 @@ export const googleLogin: RequestHandler = asyncHandler(async (req, res) => {
     user = await prisma.user.update({ where: { id: user.id }, data: { googleSub: payload.sub, avatar: user.avatar || payload.picture || undefined } });
   } else {
     user = await prisma.$transaction(async tx => {
-      const created = await tx.user.create({ data: { fullName: payload.name?.trim() || email.split('@')[0], email, googleSub: payload.sub, avatar: payload.picture || null, passwordHash: await bcrypt.hash(crypto.randomBytes(32).toString('hex'), 12) } });
+      const created = await tx.user.create({ data: {role: 'STUDENT', fullName: payload.name?.trim() || email.split('@')[0], email, googleSub: payload.sub, avatar: payload.picture || null, passwordHash: await bcrypt.hash(crypto.randomBytes(32).toString('hex'), 12) } });
       await claimPendingEnrollments(tx, created.id, email);
       return tx.user.findUniqueOrThrow({ where: { id: created.id } });
     });

@@ -1,76 +1,1163 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Log in — CampusSphere</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="auth.css">
-<link rel="stylesheet" href="google-auth.css">
-<script defer src="api.js?v=academic-foundation-1">
-</script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<script defer src="auth.js?v=academic-foundation-1">
-</script>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>CampusSphere — Welcome</title>
+
+
+    <!-- Fonts -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- IMPORTANT:
+         Only our new login stylesheet.
+    -->
+
+    <link
+        rel="stylesheet"
+        href="login.css"
+    >
+
 </head>
-<body>
-<main class="auth-shell">
-<section class="auth-panel">
-<a class="brand" href="index.html">
-<b>C</b>CampusSphere</a>
-<div class="form-wrap">
-<h1>Welcome back.</h1>
-<p>Log in to see what's happening on your campus.</p>
-<div class="google-auth" data-google-auth aria-label="Continue with Google"></div>
-<div class="divider">OR CONTINUE WITH EMAIL</div>
-<form id="login-form" novalidate>
-<p class="auth-error" id="auth-error" role="alert" aria-live="polite" hidden></p>
-<label>Email address<input id="login-email" name="email" type="email" placeholder="you@university.edu" autocomplete="email" required>
-<span class="field-error">Enter a valid email address.</span>
-</label>
-<label class="password-label">Password<input id="login-password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password" required>
-<button class="show-password" type="button" data-password-toggle>Show</button>
-</label>
-<div class="form-row">
-<label class="check">
-<input type="checkbox">Remember me</label>
-<a class="forgot" href="#forgot">Forgot password?</a>
+
+
+<body class="login-page">
+
+
+<!-- =========================================================
+     BACKGROUND
+     ========================================================= -->
+
+<div class="login-bg-grid"></div>
+
+<div class="login-bg-glow login-bg-glow--one"></div>
+
+<div class="login-bg-glow login-bg-glow--two"></div>
+
+
+
+<!-- =========================================================
+     PAGE
+     ========================================================= -->
+
+<div class="login-shell">
+
+
+
+    <!-- =====================================================
+         LEFT FLOATING CAMPUS INFORMATION
+         ===================================================== -->
+
+    <aside class="login-rail">
+
+
+        <!-- INTERNSHIP -->
+
+        <article class="float-card card-internship">
+
+            <div class="float-badge">
+                Internship
+            </div>
+
+            <div class="float-icon">
+                💼
+            </div>
+
+            <h4>
+                Google SWE Intern
+            </h4>
+
+            <p>
+                Applications open · 3 days left
+            </p>
+
+            <a href="#">
+                View opportunity →
+            </a>
+
+        </article>
+
+
+
+        <!-- CAMPUS ACTIVITY -->
+
+        <article class="float-card card-activity">
+
+            <div class="card-title-row">
+
+                <span class="pulse-dot"></span>
+
+                <h4>
+                    Campus Activity
+                </h4>
+
+            </div>
+
+
+            <ul class="activity-list">
+
+                <li>
+
+                    <span class="activity-emoji">
+                        📅
+                    </span>
+
+                    <div>
+                        <strong>12</strong>
+                        <p>Events today</p>
+                    </div>
+
+                </li>
+
+
+                <li>
+
+                    <span class="activity-emoji">
+                        🔥
+                    </span>
+
+                    <div>
+                        <strong>3</strong>
+                        <p>New opportunities</p>
+                    </div>
+
+                </li>
+
+
+                <li>
+
+                    <span class="activity-emoji">
+                        📣
+                    </span>
+
+                    <div>
+                        <strong>8</strong>
+                        <p>Club updates</p>
+                    </div>
+
+                </li>
+
+
+                <li>
+
+                    <span class="activity-emoji">
+                        🤝
+                    </span>
+
+                    <div>
+                        <strong>24</strong>
+                        <p>New connections</p>
+                    </div>
+
+                </li>
+
+            </ul>
+
+
+            <a href="#">
+                View all activity →
+            </a>
+
+        </article>
+
+
+
+        <!-- CLUBS -->
+
+        <article class="float-card card-clubs">
+
+            <div class="card-title-row">
+
+                <span class="card-chip">
+                    Popular Clubs
+                </span>
+
+            </div>
+
+
+            <ul class="club-list">
+
+                <li>
+
+                    <span class="club-icon">
+                        💻
+                    </span>
+
+                    <div>
+                        <strong>Coding Club</strong>
+                        <p>1.2k members</p>
+                    </div>
+
+                </li>
+
+
+                <li>
+
+                    <span class="club-icon">
+                        🎨
+                    </span>
+
+                    <div>
+                        <strong>Design Studio</strong>
+                        <p>856 members</p>
+                    </div>
+
+                </li>
+
+
+                <li>
+
+                    <span class="club-icon">
+                        🤖
+                    </span>
+
+                    <div>
+                        <strong>Robotics Club</strong>
+                        <p>642 members</p>
+                    </div>
+
+                </li>
+
+            </ul>
+
+
+            <a href="#">
+                Explore clubs →
+            </a>
+
+        </article>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         CENTER AUTH AREA
+         ===================================================== -->
+
+    <main class="auth-stage">
+
+
+        <section class="auth-card">
+
+
+            <!-- =================================================
+                 BRAND HEADER
+                 ================================================= -->
+
+            <div class="auth-card-top">
+
+
+                <div class="brand-block">
+
+                    <div class="brand-logo">
+                        C
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            CampusSphere
+                        </h2>
+
+                        <p>
+                            Your student universe
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="live-pill">
+
+                    <span class="live-dot"></span>
+
+                    <span>
+                        Live
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 HEADING
+                 JS CHANGES THIS BETWEEN LOGIN / SIGNUP
+                 ================================================= -->
+
+            <div class="auth-hero-copy">
+
+                <h1 id="authHeading">
+                    Welcome <span>back.</span>
+                </h1>
+
+                <p id="authSubheading">
+                    Sign in to see what's happening on your campus.
+                </p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SIGN IN / SIGN UP SWITCH
+                 IMPORTANT: THESE ARE BUTTONS.
+                 NO signup.html REDIRECTION.
+                 ================================================= -->
+
+            <div class="auth-switch">
+
+                <button
+                    type="button"
+                    class="switch-btn switch-btn--active"
+                    id="signInTab"
+                >
+                    Sign In
+                </button>
+
+
+                <button
+                    type="button"
+                    class="switch-btn"
+                    id="signUpTab"
+                >
+                    Sign Up
+                </button>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 GOOGLE
+                 ================================================= -->
+
+            
+
+<div class="google-auth-area">
+
+    <div
+        id="googleButtonContainer"
+        class="google-button-container"
+    ></div>
+
 </div>
-<button class="submit" type="submit">Log in to CampusSphere →</button>
-</form>
-<p class="bottom-link">New to CampusSphere? <a href="signup.html">Create an account</a>
-</p>
+
+            <!-- =================================================
+                 DIVIDER
+                 ================================================= -->
+
+            <div class="divider">
+
+                <span id="emailDividerText">
+                    OR CONTINUE WITH EMAIL
+                </span>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 AUTH MESSAGES
+
+                 Errors from LOGIN + SIGNUP + GOOGLE
+                 appear here.
+                 ================================================= -->
+
+            <div
+                id="authMessage"
+                class="auth-message hidden"
+                role="alert"
+                aria-live="polite"
+            ></div>
+
+
+
+            <!-- =================================================
+                 SIGN IN PANEL
+
+                 THIS IS VISIBLE BY DEFAULT
+                 ================================================= -->
+
+            <div id="signInPanel">
+
+
+                <form
+                    id="loginForm"
+                    class="auth-form"
+                    novalidate
+                >
+
+
+                    <!-- EMAIL -->
+
+                    <div class="field-group">
+
+                        <label for="email">
+                            Email address
+                        </label>
+
+
+                        <div class="input-shell">
+
+                            <span class="input-icon">
+                                ✉
+                            </span>
+
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="you@university.edu"
+                                autocomplete="email"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- PASSWORD -->
+
+                    <div class="field-group">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+
+                        <div class="input-shell">
+
+                            <span class="input-icon">
+                                🔒
+                            </span>
+
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Enter your password"
+                                autocomplete="current-password"
+                                required
+                            >
+
+
+                            <button
+                                type="button"
+                                class="toggle-password"
+                                id="togglePassword"
+                            >
+                                Show
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- REMEMBER / FORGOT -->
+
+                    <div class="auth-meta">
+
+
+                        <label class="remember-wrap">
+
+                            <input
+                                type="checkbox"
+                                id="rememberMe"
+                            >
+
+                            <span>
+                                Remember me
+                            </span>
+
+                        </label>
+
+
+                        <a
+                            href="#"
+                            class="meta-link"
+                            id="forgotPasswordLink"
+                        >
+                            Forgot password?
+                        </a>
+
+                    </div>
+
+
+
+                    <!-- LOGIN BUTTON -->
+
+                    <button
+                        type="submit"
+                        class="primary-auth-btn"
+                        id="loginSubmitButton"
+                    >
+
+                        <span id="loginButtonText">
+                            Log in to CampusSphere
+                        </span>
+
+                        <span>
+                            →
+                        </span>
+
+                    </button>
+
+
+                </form>
+
+
+                <p class="auth-footer-note">
+
+                    New to CampusSphere?
+
+                    <button
+                        type="button"
+                        id="openSignupButton"
+                        class="auth-text-button"
+                    >
+                        Create an account
+                    </button>
+
+                </p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SIGN UP PANEL
+
+                 THIS STAYS ON THE SAME PAGE.
+
+                 JS HIDES LOGIN AND SHOWS THIS PANEL.
+                 ================================================= -->
+
+      <!-- =================================================
+     SIGN UP PANEL
+     ================================================= -->
+
+<div
+    id="signUpPanel"
+    class="auth-panel-hidden"
+>
+
+    <form
+        id="signupForm"
+        class="auth-form"
+        novalidate
+    >
+
+        <!-- NAME -->
+
+        <div class="field-group">
+
+            <label for="signupName">
+                Full name
+            </label>
+
+            <div class="input-shell">
+
+                <span class="input-icon">👤</span>
+
+                <input
+                    type="text"
+                    id="signupName"
+                    name="fullName"
+                    placeholder="Your full name"
+                    autocomplete="name"
+                    required
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- EMAIL -->
+
+        <div class="field-group">
+
+            <label for="signupEmail">
+                Email address
+            </label>
+
+            <div class="input-shell">
+
+                <span class="input-icon">✉</span>
+
+                <input
+                    type="email"
+                    id="signupEmail"
+                    name="email"
+                    placeholder="you@university.edu"
+                    autocomplete="email"
+                    required
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- COLLEGE + COURSE -->
+
+        <div class="signup-row">
+
+            <div class="field-group">
+
+                <label for="signupCollege">
+                    College
+                </label>
+
+                <div class="input-shell">
+
+                    <span class="input-icon">🎓</span>
+
+                    <input
+                        type="text"
+                        id="signupCollege"
+                        name="college"
+                        placeholder="Your college"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="field-group">
+
+                <label for="signupCourse">
+                    Course
+                </label>
+
+                <div class="input-shell">
+
+                    <span class="input-icon">📚</span>
+
+                    <input
+                        type="text"
+                        id="signupCourse"
+                        name="course"
+                        placeholder="Computer Science"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- YEAR -->
+
+        <div class="field-group">
+
+            <label for="signupYear">
+                Year
+            </label>
+
+            <div class="input-shell">
+
+                <span class="input-icon">📅</span>
+
+                <select
+                    id="signupYear"
+                    name="year"
+                    required
+                >
+
+                    <option value="">
+                        Select your year
+                    </option>
+
+                    <option value="FIRST">
+                        First Year
+                    </option>
+
+                    <option value="SECOND">
+                        Second Year
+                    </option>
+
+                    <option value="THIRD">
+                        Third Year
+                    </option>
+
+                    <option value="FOURTH">
+                        Fourth Year
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- INTERESTS -->
+
+        <div class="field-group">
+
+            <label for="signupInterests">
+                Interests
+            </label>
+
+            <div class="input-shell">
+
+                <span class="input-icon">✨</span>
+
+                <input
+                    type="text"
+                    id="signupInterests"
+                    name="interests"
+                    placeholder="AI, Design, Startups"
+                >
+
+            </div>
+
+            <small class="field-helper">
+                Separate interests with commas.
+            </small>
+
+        </div>
+
+
+        <!-- PASSWORD -->
+
+        <div class="signup-row">
+
+            <div class="field-group">
+
+                <label for="signupPassword">
+                    Password
+                </label>
+
+                <div class="input-shell">
+
+                    <span class="input-icon">🔒</span>
+
+                    <input
+                        type="password"
+                        id="signupPassword"
+                        name="password"
+                        placeholder="Minimum 8 characters"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="field-group">
+
+                <label for="signupConfirmPassword">
+                    Confirm
+                </label>
+
+                <div class="input-shell">
+
+                    <span class="input-icon">🔒</span>
+
+                    <input
+                        type="password"
+                        id="signupConfirmPassword"
+                        placeholder="Repeat password"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TERMS -->
+
+        <div class="auth-meta signup-terms">
+
+            <label class="remember-wrap">
+
+                <input
+                    type="checkbox"
+                    id="signupTerms"
+                    required
+                >
+
+                <span>
+                    I agree to the Terms & Privacy Policy
+                </span>
+
+            </label>
+
+        </div>
+
+
+        <!-- CREATE ACCOUNT -->
+
+        <button
+            type="submit"
+            class="primary-auth-btn"
+            id="signupSubmitButton"
+        >
+
+            <span id="signupButtonText">
+                Create CampusSphere account
+            </span>
+
+            <span>→</span>
+
+        </button>
+
+    </form>
+
+
+    <p class="auth-footer-note">
+
+        Already on CampusSphere?
+
+        <button
+            type="button"
+            id="openSigninButton"
+            class="auth-text-button"
+        >
+            Sign in
+        </button>
+
+    </p>
+
 </div>
-<p class="auth-footer">© 2026 CampusSphere · Privacy · Terms</p>
-</section>
-<aside class="auth-visual">
-<div class="orbit o1">
+        </section>
+
+
+
+        <!-- =====================================================
+             SMALL SECURITY LINE
+             ===================================================== -->
+
+        <div class="stage-footer">
+
+            <div>
+                🛡 Secure login
+            </div>
+
+            <div>
+                🔐 Privacy focused
+            </div>
+
+            <div>
+                ⚡ Built for campus life
+            </div>
+
+        </div>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         RIGHT SIDE
+         ===================================================== -->
+
+    <aside class="experience-panel">
+
+
+        <!-- TOP -->
+
+        <div class="top-panel-row">
+
+            <div class="mini-pill">
+                One campus. One network.
+            </div>
+
+            <div class="mini-orb">
+                ✦
+            </div>
+
+        </div>
+
+
+
+        <!-- COPY -->
+
+        <div class="experience-copy">
+
+            <p class="eyebrow">
+                YOUR CAMPUS, CONNECTED
+            </p>
+
+
+            <h2>
+                Make every
+                <span>
+                    moment matter.
+                </span>
+            </h2>
+
+
+            <p>
+                Discover the people, projects and possibilities
+                waiting for you.
+            </p>
+
+        </div>
+
+
+
+        <!-- NETWORK / CAMPUS VISUAL -->
+
+        <div class="campus-visual-card">
+
+
+            <div class="network-ring network-ring--one"></div>
+
+            <div class="network-ring network-ring--two"></div>
+
+            <div class="network-ring network-ring--three"></div>
+
+
+            <div class="network-node node-connect">
+                Connect
+            </div>
+
+            <div class="network-node node-collab">
+                Collaborate
+            </div>
+
+            <div class="network-node node-grow">
+                Grow
+            </div>
+
+            <div class="network-node node-discover">
+                Discover
+            </div>
+
+
+            <div class="campus-image-wrap">
+
+                <img
+                    src="assets/campus-story/campus-entrance.webp.png.png"
+                    alt="CampusSphere campus"
+                    onerror="this.style.display='none'"
+                >
+
+            </div>
+
+        </div>
+
+
+
+        <!-- STATS -->
+
+        <div class="stats-grid">
+
+
+            <article class="stat-card">
+
+                <strong id="studentCount">
+                    2.4k+
+                </strong>
+
+                <span>
+                    Students
+                </span>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <strong id="eventCount">
+                    120+
+                </strong>
+
+                <span>
+                    Events
+                </span>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <strong id="opportunityCount">
+                    350+
+                </strong>
+
+                <span>
+                    Opportunities
+                </span>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <strong id="collegeCount">
+                    50+
+                </strong>
+
+                <span>
+                    Colleges
+                </span>
+
+            </article>
+
+
+        </div>
+
+
+
+        <!-- FOUNDER NOTE -->
+
+        <article class="founder-card">
+
+
+            <div class="founder-label">
+                WHY CAMPUSSPHERE?
+            </div>
+
+
+            <p class="founder-quote">
+
+                “College gives students a campus.
+                CampusSphere gives that campus a network —
+                where people, ideas and opportunities can
+                actually find each other.”
+
+            </p>
+
+
+            <div class="founder-meta">
+
+
+                <div class="founder-profile">
+
+
+                    <img
+                        src="assets/team/vijay-review.png"
+                        alt="Vijay Gaikwad"
+                        class="founder-avatar"
+                        onerror="this.style.display='none'"
+                    >
+
+
+                    <div>
+
+                        <h4>
+                            Vijay Gaikwad
+                        </h4>
+
+                        <p>
+                            Founder, CampusSphere
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </article>
+
+
+
+        <!-- SUPPORT -->
+
+        <div class="support-row">
+
+            <span>
+                Need help?
+            </span>
+
+            <a href="#">
+                Contact support
+            </a>
+
+        </div>
+
+
+    </aside>
+
+
 </div>
-<div class="orbit o2">
-</div>
-<div class="visual-top">
-<span>One campus. One network.</span>
-<span>✦</span>
-</div>
-<div class="visual-copy">
-<p>YOUR CAMPUS, CONNECTED</p>
-<h2>Make every<br>moment <i>matter.</i>
-</h2>
-<span>Discover the people, projects and possibilities waiting for you.</span>
-</div>
-<div class="visual-card">
-<p>“CampusSphere made it easy to find my team and finally build something I'm proud of.”</p>
-<div class="mini-students">
-<img src="https://i.pravatar.cc/64?img=47" alt="Riya Sharma">
-<b>Riya Sharma<br>
-<small>Computer Science, 3rd year</small>
-</b>
-<span>★★★★★</span>
-</div>
-</div>
-</aside>
-</main>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
+
+
+<!-- Google Identity Services -->
+
+<script
+    src="https://accounts.google.com/gsi/client"
+    async
+    defer
+></script>
+
+
+<!-- Existing CampusSphere API helper -->
+
+<script
+    src="https://accounts.google.com/gsi/client"
+    async
+    defer
+></script>
+
+<script
+    type="module"
+    src="login-auth.js"
+></script>
+
 </body>
+</html>
+
+</body>
+
 </html>
