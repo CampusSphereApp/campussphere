@@ -1,1 +1,248 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Opportunities — CampusSphere</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="opportunities.css"><script type="module" src="opportunities.js"></script></head><body><header><a class="brand" href="dashboard.html"><b>C</b>CampusSphere</a><nav><a href="dashboard.html">Dashboard</a><a href="discover.html">Discover</a><a href="projects.html">Projects</a><a class="active" href="opportunities.html">Opportunities</a><a href="my-opportunities.html">My Opportunities</a></nav><img data-current-user-avatar alt="Current user"></header><main class="wrap"><section class="market-hero"><div><p>COLLABORATION MARKETPLACE</p><h1>Find people to <i>build with.</i></h1><span>Share what you are creating, find meaningful work, and contribute your skills.</span></div><button class="primary" data-post>+ Post Opportunity</button></section><section class="search"><label>⌕ <input id="search" placeholder="Search builds, skills, creators or opportunities"></label><button id="filter-toggle">Filters</button></section><section class="pills" id="tabs"><button class="active" data-tab="for-you">For You</button><button data-tab="build">Build With Me</button><button data-tab="internships">Internships</button><button data-tab="freelance">Freelance</button><button data-tab="startup">Startup</button><button data-tab="research">Research</button><button data-tab="campus">Campus</button><button data-tab="saved">Saved</button></section><section class="market-layout"><aside class="market-filters" id="filters"><label>Type<select id="type-filter"><option value="">All types</option></select></label><label>Work mode<select id="mode-filter"><option value="">Any mode</option><option>REMOTE</option><option>HYBRID</option><option>ON_SITE</option></select></label><label>Compensation<select id="pay-filter"><option value="">Any</option><option>PAID</option><option>UNPAID</option><option>TO_BE_DISCUSSED</option></select></label><label>Skill<input id="skill-filter" placeholder="React"></label><label>Location<input id="location-filter" placeholder="City or remote"></label><label>Sort<select id="sort-filter"><option value="newest">Newest</option><option value="deadline">Deadline</option></select></label><button id="apply-filters">Apply filters</button></aside><section><div class="result-head"><div><h2>Opportunities for you</h2><p><b id="count">0</b> open opportunities</p></div></div><div class="cards marketplace-cards" id="cards" aria-live="polite"></div><div class="empty" hidden><h2>No opportunities here yet</h2><p>Be the first to invite CampusSphere builders to contribute.</p><button class="primary" data-post>Post Opportunity</button></div></section></section></main><dialog id="post-dialog" class="market-dialog"><form id="post-form"><div class="dialog-head"><div><p>INVITE COLLABORATORS</p><h2>Post an opportunity</h2></div><button type="button" data-close aria-label="Close">×</button></div><label>Title<input name="title" required maxlength="140" placeholder="Building an AI Study Assistant"></label><div class="form-grid"><label>Opportunity type<select name="type" required></select></label><label>Stage<select name="stage"><option value="">Not applicable</option><option>IDEA</option><option>PROTOTYPE</option><option>WORKING_PRODUCT</option><option>EARLY_STARTUP</option></select></label></div><label>Description<textarea name="description" required minlength="20" placeholder="Tell people what you are creating and why it matters."></textarea></label><label>What help do you need?<textarea name="helpNeeded" placeholder="Describe the collaborators and contributions you need."></textarea></label><div class="form-grid"><label>Required skills<input name="requiredSkills" placeholder="React, JavaScript, UI"></label><label>Preferred skills<input name="preferredSkills" placeholder="Figma, Node.js"></label><label>Work mode<select name="workMode"><option>REMOTE</option><option>HYBRID</option><option>ON_SITE</option></select></label><label>Location<input name="location" placeholder="Optional"></label><label>Duration<input name="duration" placeholder="2–3 weeks"></label><label>Commitment<select name="commitment"><option>ONE_TIME</option><option selected>SHORT_TERM</option><option>ONGOING</option></select></label><label>Compensation<select name="compensationType"><option>PAID</option><option>UNPAID</option><option selected>TO_BE_DISCUSSED</option></select></label><label>Compensation details<input name="compensationDetails" placeholder="Optional amount or range"></label><label>People needed<input name="peopleNeeded" type="number" min="1" max="100" value="1"></label><label>Deadline<input name="deadline" type="date"></label></div><label>Related public project<select name="relatedProjectId"><option value="">None</option></select></label><div id="post-feedback" class="feedback" hidden></div><footer><button type="button" data-close>Cancel</button><button class="primary" type="submit">Post Opportunity</button></footer></form></dialog></body></html>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"><script>
+  document.documentElement.classList.add('cs-shell-loading');
+</script><script>
+  document.documentElement.classList.add('cs-shell-loading');
+</script>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Opportunities — CampusSphere</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap"
+        rel="stylesheet">
+   <link rel="stylesheet" href="opportunities.css">
+<link rel="stylesheet" href="opportunity-marketplace.css">
+<link rel="stylesheet" href="internal-shell.css">
+<script type="module" src="opportunities.js"></script>
+<script type="module" src="internal-shell.js"></script>
+</head>
+
+<body>
+
+<div class="internal-shell">
+
+  <aside class="internal-sidebar">
+
+    <a class="internal-brand" href="dashboard.html">
+      <b>C</b>
+      CampusSphere
+    </a>
+
+    <nav class="internal-nav">
+
+      <a href="dashboard.html">
+        ⌂ <span>Dashboard</span>
+      </a>
+
+      <a href="discover.html">
+        ◈ <span>Discover</span>
+      </a>
+
+      <a href="communities.html">
+        ◎ <span>Communities</span>
+      </a>
+
+      <a href="events.html">
+        ◷ <span>Events</span>
+      </a>
+
+      <a href="projects.html">
+        ◇ <span>Projects</span>
+      </a>
+
+      <a class="selected" href="opportunities.html">
+        ↗ <span>Opportunities</span>
+      </a>
+
+    <a href="academics.html" data-academics-link>
+  ▣ <span>Academics</span>
+</a>
+      <hr>
+
+      <a href="messages.html">
+        ◌ <span>Messages</span>
+      </a>
+
+      <a href="notifications.html">
+        ♧ <span>Notifications</span>
+      </a>
+
+      <a href="profile.html">
+        ♙ <span>Profile</span>
+      </a>
+
+      <a href="settings.html">
+        ⚙ <span>Settings</span>
+      </a>
+
+    </nav>
+
+    <div class="internal-sidebar-user">
+
+  <img
+    data-current-user-avatar
+    alt="Current user"
+  >
+
+  <div>
+    <b data-current-user-name>
+      Loading…
+    </b>
+
+    <small data-current-user-detail>
+      CampusSphere member
+    </small>
+  </div>
+
+  <button
+    class="internal-logout"
+    type="button"
+    data-internal-logout
+    aria-label="Log out"
+    title="Log out"
+  >
+    ↪
+  </button>
+
+</div>
+
+  </aside>
+
+
+  <section class="internal-page">
+
+    <header class="internal-topbar">
+
+      <div class="internal-topbar-search">
+        ⌕
+        <input
+          type="search"
+          placeholder="Search CampusSphere"
+          aria-label="Search CampusSphere"
+        >
+      </div>
+
+      <div class="internal-top-actions">
+
+        <a href="notifications.html" aria-label="Notifications">
+          ♧
+        </a>
+
+        <a href="profile.html">
+          <img
+            data-current-user-avatar
+            alt="Current user"
+          >
+        </a>
+
+      </div>
+
+    </header>
+
+    <main class="wrap">
+        <section class="market-hero">
+            <div>
+                <p>COLLABORATION MARKETPLACE</p>
+                <h1>Find people to <i>build with.</i></h1><span>Share what you are creating, find meaningful work, and
+                    contribute your skills.</span>
+            </div><button class="primary" data-post>+ Post Opportunity</button>
+        </section>
+        <section class="search"><label>⌕ <input id="search"
+                    placeholder="Search builds, skills, creators or opportunities"></label><button
+                id="filter-toggle">Filters</button></section>
+        <section class="pills" id="tabs"><button class="active" data-tab="for-you">For You</button><button
+                data-tab="build">Build With Me</button><button data-tab="internships">Internships</button><button
+                data-tab="freelance">Freelance</button><button data-tab="startup">Startup</button><button
+                data-tab="research">Research</button><button data-tab="campus">Campus</button><button
+                data-tab="saved">Saved</button></section>
+        <section class="market-layout">
+            <aside class="market-filters" id="filters"><label>Type<select id="type-filter">
+                        <option value="">All types</option>
+                    </select></label><label>Work mode<select id="mode-filter">
+                        <option value="">Any mode</option>
+                        <option>REMOTE</option>
+                        <option>HYBRID</option>
+                        <option>ON_SITE</option>
+                    </select></label><label>Compensation<select id="pay-filter">
+                        <option value="">Any</option>
+                        <option>PAID</option>
+                        <option>UNPAID</option>
+                        <option>TO_BE_DISCUSSED</option>
+                    </select></label><label>Skill<input id="skill-filter"
+                        placeholder="React"></label><label>Location<input id="location-filter"
+                        placeholder="City or remote"></label><label>Sort<select id="sort-filter">
+                        <option value="newest">Newest</option>
+                        <option value="deadline">Deadline</option>
+                    </select></label><button id="apply-filters">Apply filters</button></aside>
+            <section>
+                <div class="result-head">
+                    <div>
+                        <h2>Opportunities for you</h2>
+                        <p><b id="count">0</b> open opportunities</p>
+                    </div>
+                </div>
+                <div class="cards marketplace-cards" id="cards" aria-live="polite"></div>
+                <div class="empty" hidden>
+                    <h2>No opportunities here yet</h2>
+                    <p>Be the first to invite CampusSphere builders to contribute.</p><button class="primary"
+                        data-post>Post Opportunity</button>
+                </div>
+            </section>
+        </section>
+    </main>  </section>
+
+</div>
+    <dialog id="post-dialog" class="market-dialog">
+        <form id="post-form">
+            <div class="dialog-head">
+                <div>
+                    <p>INVITE COLLABORATORS</p>
+                    <h2>Post an opportunity</h2>
+                </div><button type="button" data-close aria-label="Close">×</button>
+            </div><label>Title<input name="title" required maxlength="140"
+                    placeholder="Building an AI Study Assistant"></label>
+            <div class="form-grid"><label>Opportunity type<select name="type"
+                        required></select></label><label>Stage<select name="stage">
+                        <option value="">Not applicable</option>
+                        <option>IDEA</option>
+                        <option>PROTOTYPE</option>
+                        <option>WORKING_PRODUCT</option>
+                        <option>EARLY_STARTUP</option>
+                    </select></label></div><label>Description<textarea name="description" required minlength="20"
+                    placeholder="Tell people what you are creating and why it matters."></textarea></label><label>What
+                help do you need?<textarea name="helpNeeded"
+                    placeholder="Describe the collaborators and contributions you need."></textarea></label>
+            <div class="form-grid"><label>Required skills<input name="requiredSkills"
+                        placeholder="React, JavaScript, UI"></label><label>Preferred skills<input name="preferredSkills"
+                        placeholder="Figma, Node.js"></label><label>Work mode<select name="workMode">
+                        <option>REMOTE</option>
+                        <option>HYBRID</option>
+                        <option>ON_SITE</option>
+                    </select></label><label>Location<input name="location"
+                        placeholder="Optional"></label><label>Duration<input name="duration"
+                        placeholder="2–3 weeks"></label><label>Commitment<select name="commitment">
+                        <option>ONE_TIME</option>
+                        <option selected>SHORT_TERM</option>
+                        <option>ONGOING</option>
+                    </select></label><label>Compensation<select name="compensationType">
+                        <option>PAID</option>
+                        <option>UNPAID</option>
+                        <option selected>TO_BE_DISCUSSED</option>
+                    </select></label><label>Compensation details<input name="compensationDetails"
+                        placeholder="Optional amount or range"></label><label>People needed<input name="peopleNeeded"
+                        type="number" min="1" max="100" value="1"></label><label>Deadline<input name="deadline"
+                        type="date"></label></div><label>Related public project<select name="relatedProjectId">
+                    <option value="">None</option>
+                </select></label>
+            <div id="post-feedback" class="feedback" hidden></div>
+            <footer><button type="button" data-close>Cancel</button><button class="primary" type="submit">Post
+                    Opportunity</button></footer>
+        </form>
+    </dialog>
+</body>
+
+</html>

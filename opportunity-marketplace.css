@@ -1,0 +1,784 @@
+/* ============================================================
+   CAMPUSSPHERE OPPORTUNITY MARKETPLACE
+   Dialogs, forms, buttons and marketplace components
+   ============================================================ */
+
+:root {
+  --market-purple: #5b49c7;
+  --market-purple-dark: #4c3caf;
+  --market-purple-soft: #f1efff;
+  --market-ink: #19223b;
+  --market-muted: #6d778c;
+  --market-line: #e4e6ee;
+}
+
+
+/* ============================================================
+   PRIMARY BUTTONS
+   ============================================================ */
+
+.primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  min-height: 40px;
+
+  padding: 10px 17px;
+
+  border: 0;
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #5b49c7,
+      #725fe0
+    );
+
+  color: #fff;
+
+  font:
+    700 12px
+    "DM Sans",
+    sans-serif;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 7px 18px
+    rgba(91, 73, 199, .18);
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    background .18s ease;
+}
+
+
+.primary:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 10px 24px
+    rgba(91, 73, 199, .24);
+}
+
+
+.primary:active {
+  transform: translateY(0);
+}
+
+
+.primary:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+/* ============================================================
+   DIALOG BACKDROP
+   ============================================================ */
+
+.market-dialog {
+  width:
+    min(
+      820px,
+      calc(100% - 36px)
+    );
+
+  max-height: 88vh;
+
+  margin: auto;
+
+  padding: 0;
+
+  border: 0;
+
+  border-radius: 20px;
+
+  background: #fff;
+
+  color: var(--market-ink);
+
+  box-shadow:
+    0 30px 90px
+    rgba(17, 21, 40, .24);
+
+  overflow: hidden;
+}
+
+
+.market-dialog::backdrop {
+  background:
+    rgba(17, 21, 40, .56);
+
+  backdrop-filter:
+    blur(5px);
+
+  -webkit-backdrop-filter:
+    blur(5px);
+}
+
+
+/* ============================================================
+   DIALOG FORM
+   ============================================================ */
+
+.market-dialog form {
+  max-height: 88vh;
+
+  padding: 28px;
+
+  overflow-y: auto;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff,
+      #fdfcff
+    );
+}
+
+
+/* ============================================================
+   DIALOG HEADER
+   ============================================================ */
+
+.dialog-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  gap: 20px;
+
+  margin-bottom: 25px;
+}
+
+
+.dialog-head p {
+  margin: 0 0 5px;
+
+  color: var(--market-purple);
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 1.3px;
+}
+
+
+.dialog-head h2 {
+  margin: 0;
+
+  color: var(--market-ink);
+
+  font:
+    800 25px/1.15
+    Manrope,
+    sans-serif;
+
+  letter-spacing: -.6px;
+}
+
+
+.dialog-head > button {
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 36px;
+
+  width: 36px;
+  height: 36px;
+
+  padding: 0;
+
+  border: 1px solid var(--market-line);
+  border-radius: 10px;
+
+  background: #fff;
+
+  color: #70798c;
+
+  font-size: 20px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background .18s ease,
+    color .18s ease,
+    border-color .18s ease;
+}
+
+
+.dialog-head > button:hover {
+  background: #f4f2ff;
+  border-color: #d8d2ff;
+  color: var(--market-purple);
+}
+
+
+/* ============================================================
+   LABELS
+   ============================================================ */
+
+.market-dialog label {
+  display: grid;
+
+  gap: 7px;
+
+  margin-bottom: 17px;
+
+  color: #4f586d;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+
+/* ============================================================
+   INPUTS
+   ============================================================ */
+
+.market-dialog input,
+.market-dialog select,
+.market-dialog textarea {
+  width: 100%;
+
+  border:
+    1px solid
+    #dfe2ea;
+
+  border-radius: 10px;
+
+  outline: 0;
+
+  background: #fff;
+
+  color: var(--market-ink);
+
+  font:
+    12px
+    "DM Sans",
+    sans-serif;
+
+  transition:
+    border-color .18s ease,
+    box-shadow .18s ease,
+    background .18s ease;
+}
+
+
+.market-dialog input,
+.market-dialog select {
+  height: 43px;
+
+  padding: 0 12px;
+}
+
+
+.market-dialog textarea {
+  min-height: 105px;
+
+  padding: 12px;
+
+  line-height: 1.55;
+
+  resize: vertical;
+}
+
+
+.market-dialog input::placeholder,
+.market-dialog textarea::placeholder {
+  color: #a0a6b5;
+}
+
+
+.market-dialog input:focus,
+.market-dialog select:focus,
+.market-dialog textarea:focus {
+  border-color: #a99def;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(91, 73, 199, .08);
+
+  background: #fff;
+}
+
+
+/* ============================================================
+   FORM GRID
+   ============================================================ */
+
+.form-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 0 16px;
+}
+
+
+/* ============================================================
+   FEEDBACK
+   ============================================================ */
+
+.feedback {
+  margin: 5px 0 17px;
+
+  padding: 11px 13px;
+
+  border-radius: 9px;
+
+  background: #eef9f4;
+
+  color: #24755e;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+
+.feedback.error {
+  background: #fff0ed;
+
+  color: #b54d3d;
+}
+
+
+/* ============================================================
+   DIALOG FOOTER
+   Overrides opportunities.css global footer styling
+   ============================================================ */
+
+.market-dialog footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 8px;
+
+  padding-top: 18px;
+
+  border-top:
+    1px solid
+    var(--market-line);
+}
+
+
+.market-dialog footer button {
+  margin: 0;
+
+  min-height: 40px;
+
+  padding: 9px 16px;
+
+  border:
+    1px solid
+    #dcdfe8;
+
+  border-radius: 9px;
+
+  background: #fff;
+
+  color: #596277;
+
+  font:
+    700 11px
+    "DM Sans",
+    sans-serif;
+
+  cursor: pointer;
+}
+
+
+.market-dialog footer button:hover {
+  background: #f7f7fa;
+}
+
+
+.market-dialog footer .primary {
+  border: 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      #5b49c7,
+      #725fe0
+    );
+
+  color: #fff;
+}
+
+
+/* ============================================================
+   CREATOR AVATAR
+   ============================================================ */
+
+.creator-avatar {
+  width: 40px;
+  height: 40px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+
+  background: var(--market-purple-soft);
+}
+
+
+/* ============================================================
+   MARKET META
+   ============================================================ */
+
+.market-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 12px;
+
+  color: var(--market-muted);
+
+  font-size: 9px;
+}
+
+
+.market-meta strong {
+  color: var(--market-purple);
+
+  font-size: 9px;
+}
+
+
+/* ============================================================
+   EMPTY STATE BUTTON
+   ============================================================ */
+
+.empty .primary {
+  margin-top: 8px;
+}
+
+
+/* ============================================================
+   BUTTON LINKS
+   ============================================================ */
+
+.button-link {
+  text-decoration: none;
+}
+
+
+/* ============================================================
+   DIALOG SCROLLBAR
+   ============================================================ */
+
+.market-dialog form::-webkit-scrollbar {
+  width: 7px;
+}
+
+
+.market-dialog form::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+.market-dialog form::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+
+  background: #d8d5e7;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media(max-width:700px) {
+
+  .market-dialog {
+    width:
+      calc(
+        100% - 20px
+      );
+
+    max-height: 94vh;
+
+    border-radius: 16px;
+  }
+
+
+  .market-dialog form {
+    max-height: 94vh;
+
+    padding: 20px 17px;
+  }
+
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .dialog-head h2 {
+    font-size: 22px;
+  }
+
+
+  .market-dialog footer {
+    flex-direction: column-reverse;
+  }
+
+
+  .market-dialog footer button {
+    width: 100%;
+  }
+
+}/* ============================================================
+   MY OPPORTUNITIES
+   ============================================================ */
+
+.my-opportunity-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:20px;
+  margin-top:34px;
+}
+
+.my-opportunity-panel{
+  min-width:0;
+  padding:22px;
+  border:1px solid var(--market-line);
+  border-radius:16px;
+  background:#fff;
+}
+
+.management-list{
+  display:grid;
+  gap:10px;
+}
+
+.management-list > article{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:18px;
+
+  padding:14px;
+
+  border:1px solid var(--market-line);
+  border-radius:12px;
+
+  background:#fff;
+}
+
+.management-list article > div:first-child{
+  min-width:0;
+}
+
+.management-list article b,
+.management-list article small{
+  display:block;
+}
+
+.management-list article b{
+  color:var(--market-ink);
+  font:700 12px Manrope,sans-serif;
+}
+
+.management-list article small{
+  margin-top:3px;
+  color:var(--market-muted);
+  font-size:10px;
+}
+
+.management-list article > div:last-child{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.management-list button,
+.management-list select{
+  min-height:34px;
+
+  padding:7px 9px;
+
+  border:1px solid #dddfea;
+  border-radius:8px;
+
+  background:#fff;
+
+  color:#5d6578;
+
+  font:700 10px "DM Sans",sans-serif;
+}
+
+.management-list button{
+  cursor:pointer;
+}
+
+.management-list button:hover{
+  border-color:#cfc8fa;
+  color:var(--market-purple);
+  background:#f7f5ff;
+}
+
+
+/* Applicant review */
+
+.applicant-review{
+  margin-top:24px;
+
+  padding:23px;
+
+  border:1px solid var(--market-line);
+  border-radius:16px;
+
+  background:#fff;
+}
+
+.review-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+
+  margin-bottom:18px;
+}
+
+.review-head p{
+  margin:0;
+  color:var(--market-purple);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1.2px;
+}
+
+.review-head h2{
+  margin:3px 0 0;
+  font:800 21px Manrope,sans-serif;
+}
+
+.review-head > button{
+  width:34px;
+  height:34px;
+
+  border:1px solid var(--market-line);
+  border-radius:9px;
+
+  background:#fff;
+
+  color:#727b8d;
+  font-size:19px;
+
+  cursor:pointer;
+}
+
+#applicant-list{
+  display:grid;
+  gap:12px;
+}
+
+#applicant-list article{
+  padding:17px;
+
+  border:1px solid var(--market-line);
+  border-radius:13px;
+
+  background:#fff;
+}
+
+.applicant-head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.applicant-head img{
+  width:44px;
+  height:44px;
+
+  border-radius:50%;
+  object-fit:cover;
+}
+
+.applicant-head span{
+  min-width:0;
+}
+
+.applicant-head a{
+  color:var(--market-ink);
+  text-decoration:none;
+}
+
+.applicant-head b,
+.applicant-head small{
+  display:block;
+}
+
+.applicant-head small{
+  color:var(--market-muted);
+  font-size:10px;
+}
+
+#applicant-list article > p{
+  color:#5d6679;
+  font-size:11px;
+  line-height:1.6;
+}
+
+#applicant-list footer{
+  gap:7px;
+}
+
+#applicant-list footer button{
+  margin-left:0;
+  padding:7px 9px;
+
+  border:1px solid #dddfea;
+  border-radius:7px;
+
+  background:#fff;
+
+  color:var(--market-purple);
+
+  cursor:pointer;
+}
+
+
+@media(max-width:850px){
+
+  .my-opportunity-grid{
+    grid-template-columns:1fr;
+  }
+
+}
+
+
+@media(max-width:600px){
+
+  .my-opportunity-panel,
+  .applicant-review{
+    padding:17px;
+  }
+
+  .management-list > article{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+}

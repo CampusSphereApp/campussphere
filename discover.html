@@ -1,47 +1,49 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Discover — CampusSphere</title>
+  <title>Discover â€” CampusSphere</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="discover.css">
   <script defer src="discover.js"></script>
+  <link rel="stylesheet" href="internal-shell.css">
+  <script type="module" src="internal-shell.js"></script>
 </head>
 <body>
   <div class="app">
     <aside class="sidebar">
       <a class="brand" href="dashboard.html"><b>C</b>CampusSphere</a>
       <nav>
-        <a href="dashboard.html">⌂ <span>Dashboard</span></a>
-        <a class="selected" href="discover.html">◈ <span>Discover</span></a>
-        <a href="communities.html">◎ <span>Communities</span></a>
-        <a href="events.html">◷ <span>Events</span></a>
-        <a href="projects.html">◇ <span>Projects</span></a>
-        <a href="opportunities.html">↗ <span>Opportunities</span></a>
+        <a href="dashboard.html">âŒ‚ <span>Dashboard</span></a>
+        <a class="selected" href="discover.html">â—ˆ <span>Discover</span></a>
+        <a href="communities.html">â—Ž <span>Communities</span></a>
+        <a href="events.html">â—· <span>Events</span></a>
+        <a href="projects.html">â—‡ <span>Projects</span></a>
+        <a href="opportunities.html">â†— <span>Opportunities</span></a>
         <hr>
-        <a href="messages.html">◌ <span>Messages</span></a>
-        <a href="notifications.html">♧ <span>Notifications</span></a>
-        <a href="profile.html">♙ <span>Profile</span></a>
-        <a href="settings.html">⚙ <span>Settings</span></a>
+        <a href="messages.html">â—Œ <span>Messages</span></a>
+        <a href="notifications.html">â™§ <span>Notifications</span></a>
+        <a href="profile.html">â™™ <span>Profile</span></a>
+        <a href="settings.html">âš™ <span>Settings</span></a>
       </nav>
       <div class="user">
         <img data-current-user-avatar alt="Current user">
-        <div><b data-current-user-name>Loading profile…</b><small data-current-user-detail>Loading profile…</small></div>
-        <a href="login.html" data-logout aria-label="Log out">↪</a>
+        <div><b data-current-user-name>Loading profileâ€¦</b><small data-current-user-detail>Loading profileâ€¦</small></div>
+        <a href="login.html" data-logout aria-label="Log out">â†ª</a>
       </div>
     </aside>
     <main>
       <header class="top">
-        <button class="menu" aria-label="Open menu">☰</button>
-        <div class="global-search">⌕ <input id="global-student-search" type="search" placeholder="Search CampusSphere"></div>
-        <div><button aria-label="Help">?</button><button class="notify" aria-label="Notifications">♧</button><img data-current-user-avatar alt="Current user"></div>
+        <button class="menu" aria-label="Open menu">â˜°</button>
+        <div class="global-search">âŒ• <input id="global-student-search" type="search" placeholder="Search CampusSphere"></div>
+        <div><button aria-label="Help">?</button><button class="notify" aria-label="Notifications">â™§</button><img data-current-user-avatar alt="Current user"></div>
       </header>
       <div class="content">
         <section class="intro"><p>EXPLORE YOUR CAMPUS</p><h1>Discover <i>your people.</i></h1><span>Find students, communities, projects and opportunities that move you forward.</span></section>
-        <section class="discover-search"><label>⌕<input id="student-search" type="search" placeholder="Search by name, email, college or course"></label><button id="filter-toggle" type="button">☷ Filters</button></section>
+        <section class="discover-search"><label>âŒ•<input id="student-search" type="search" placeholder="Search by name, email, college or course"></label><button id="filter-toggle" type="button">â˜· Filters</button></section>
         <section class="tabs" role="tablist"><button class="active" type="button">Students <b id="tab-count">0</b></button><button type="button" disabled>Communities</button><button type="button" disabled>Events</button><button type="button" disabled>Projects</button></section>
         <div class="layout">
           <aside class="filters" id="filters">
@@ -51,9 +53,9 @@
           </aside>
           <section class="results">
             <div class="result-head"><p><b id="count">0</b> students to discover</p><label>Sort by <select disabled><option>Newest</option></select></label></div>
-            <p id="discover-status" aria-live="polite">Loading registered students…</p>
+            <p id="discover-status" aria-live="polite">Loading registered studentsâ€¦</p>
             <div class="student-grid" id="student-grid" aria-live="polite" aria-busy="true"></div>
-            <div class="empty" hidden><b>⌕</b><h2>No students found</h2><p>Try a different name, email, college, or course.</p><button id="empty-clear" type="button">Clear search</button></div>
+            <div class="empty" hidden><b>âŒ•</b><h2>No students found</h2><p>Try a different name, email, college, or course.</p><button id="empty-clear" type="button">Clear search</button></div>
           </section>
         </div>
       </div>
@@ -61,3 +63,4 @@
   </div>
 </body>
 </html>
+

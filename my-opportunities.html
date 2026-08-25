@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <script>
+    document.documentElement.classList.add('cs-shell-loading');
+  </script>
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>My Opportunities — CampusSphere</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="internal-shell.css">
+  <link rel="stylesheet" href="opportunities.css">
+  <link rel="stylesheet" href="opportunity-marketplace.css">
+
+  <script type="module" src="internal-shell.js"></script>
+  <script type="module" src="opportunities.js"></script>
+</head>
+
+
+<body>
+
+<div class="internal-shell">
+
+  <aside class="internal-sidebar">
+
+    <a class="internal-brand" href="dashboard.html">
+      <b>C</b>
+      CampusSphere
+    </a>
+
+    <nav class="internal-nav">
+
+      <a href="dashboard.html">
+        ⌂ <span>Dashboard</span>
+      </a>
+
+      <a href="discover.html">
+        ◈ <span>Discover</span>
+      </a>
+
+      <a href="communities.html">
+        ◎ <span>Communities</span>
+      </a>
+
+      <a href="events.html">
+        ◷ <span>Events</span>
+      </a>
+
+      <a href="projects.html">
+        ◇ <span>Projects</span>
+      </a>
+
+      <a class="selected" href="opportunities.html">
+        ↗ <span>Opportunities</span>
+      </a>
+
+      <a href="academics.html" data-academics-link>
+        ▣ <span>Academics</span>
+      </a>
+
+      <hr>
+
+      <a href="messages.html">
+        ◌ <span>Messages</span>
+      </a>
+
+      <a href="notifications.html">
+        ♧ <span>Notifications</span>
+      </a>
+
+      <a href="profile.html">
+        ♙ <span>Profile</span>
+      </a>
+
+      <a href="settings.html">
+        ⚙ <span>Settings</span>
+      </a>
+
+    </nav>
+
+
+    <div class="internal-sidebar-user">
+
+      <img
+        data-current-user-avatar
+        alt="Current user"
+      >
+
+      <div>
+
+        <b data-current-user-name>
+          Loading…
+        </b>
+
+        <small data-current-user-detail>
+          CampusSphere member
+        </small>
+
+      </div>
+
+      <button
+        class="internal-logout"
+        type="button"
+        data-internal-logout
+        aria-label="Log out"
+        title="Log out"
+      >
+        ↪
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <section class="internal-page">
+
+    <header class="internal-topbar">
+
+      <button
+        class="internal-mobile-menu"
+        type="button"
+        aria-label="Open navigation"
+      >
+        ☰
+      </button>
+
+      <div class="internal-topbar-search">
+        ⌕
+
+        <input
+          type="search"
+          placeholder="Search CampusSphere"
+        >
+      </div>
+
+      <div class="internal-top-actions">
+
+        <a
+          href="notifications.html"
+          aria-label="Notifications"
+        >
+          ♧
+        </a>
+
+        <a href="profile.html">
+
+          <img
+            data-current-user-avatar
+            alt="Current user"
+          >
+
+        </a>
+
+      </div>
+
+    </header>
+
+
+    <main
+      class="wrap"
+      id="my-opportunities"
+    >
+
+      <section class="market-hero">
+
+        <div>
+
+          <p>YOUR OPPORTUNITY WORKSPACE</p>
+
+          <h1>
+            Manage what you're
+            <i>building.</i>
+          </h1>
+
+          <span>
+            Track opportunities you've posted, applications you've made,
+            and people interested in working with you.
+          </span>
+
+        </div>
+
+        <a
+          class="primary button-link"
+          href="opportunities.html"
+        >
+          Browse Opportunities
+        </a>
+
+      </section>
+
+
+      <section class="my-opportunity-grid">
+
+        <article class="my-opportunity-panel">
+
+          <div class="result-head">
+
+            <div>
+
+              <h2>
+                Your posted opportunities
+              </h2>
+
+              <p>
+                Manage applicants and opportunity status.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div
+            id="posted-list"
+            class="management-list"
+          >
+            <div class="empty-card">
+              <b>Loading your opportunities…</b>
+            </div>
+          </div>
+
+        </article>
+
+
+        <article class="my-opportunity-panel">
+
+          <div class="result-head">
+
+            <div>
+
+              <h2>
+                Your applications
+              </h2>
+
+              <p>
+                Track opportunities you've applied to.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div
+            id="application-list"
+            class="management-list"
+          >
+            <div class="empty-card">
+              <b>Loading applications…</b>
+            </div>
+          </div>
+
+        </article>
+
+      </section>
+
+
+      <section
+        id="applicant-review"
+        class="applicant-review"
+        hidden
+      >
+
+        <div class="review-head">
+
+          <div>
+
+            <p>APPLICANT REVIEW</p>
+
+            <h2>
+              Review collaborators
+            </h2>
+
+          </div>
+
+          <button
+            type="button"
+            data-close-review
+          >
+            ×
+          </button>
+
+        </div>
+
+        <div id="applicant-list"></div>
+
+      </section>
+
+    </main>
+
+  </section>
+
+</div>
+
+</body>
+</html>

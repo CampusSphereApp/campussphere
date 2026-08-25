@@ -3,8 +3,22 @@ const API_BASE = `${apiHost}/api/v1`;
 const accessTokenKey = 'campussphere_access_token';
 let currentUserPromise = null;
 
-export const workspaceUrl = (role) => role === 'TEACHER' ? 'teacher-dashboard.html' : role === 'COLLEGE_ADMIN' ? 'college-admin.html' : role === 'ADMIN' ? 'admin.html' : 'dashboard.html';
+export const workspaceUrl = (role) => {
 
+  switch (role) {
+
+    case 'ADMIN':
+      return 'admin.html';
+
+    case 'STUDENT':
+    case 'TEACHER':
+    case 'COLLEGE_ADMIN':
+    default:
+      return 'dashboard.html';
+
+  }
+
+};
 export const escapeHtml = (value = '') => String(value).replace(/[&<>'"]/g, (character) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
 })[character]);

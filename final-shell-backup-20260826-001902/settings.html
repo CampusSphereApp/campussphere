@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Settings — CampusSphere</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="profile.css">
+<link rel="stylesheet" href="settings-about.css">
+<script defer src="profile.js">
+</script>
+</head>
+<body>
+<header>
+<a class="brand" href="dashboard.html">
+<b>C</b>CampusSphere</a>
+<nav>
+<a href="dashboard.html">Dashboard</a>
+<a href="discover.html">Discover</a>
+<a href="events.html">Events</a>
+<a href="communities.html">Communities</a>
+</nav>
+<img data-current-user-avatar alt="Current user">
+</header>
+<main class="settings wrap">
+<p>ACCOUNT SETTINGS</p>
+<h1>Settings</h1>
+<div class="settings-layout">
+<nav>
+<button class="active">Profile</button>
+<button>Account</button>
+<button>Notifications</button>
+<button>Privacy</button>
+<button>Appearance</button>
+<a class="settings-about" href="about.html">About CampusSphere</a>
+</nav>
+<section>
+<p class="profile-message" id="profile-message" role="status" aria-live="polite" hidden></p>
+<div class="settings-head">
+<div>
+<h2>Profile details</h2>
+<span>Update the information people see on your profile.</span>
+</div>
+<button id="save">Save changes</button>
+</div>
+<form id="profile-settings-form">
+<div class="photo-row">
+<img data-current-user-avatar alt="Current user">
+<div>
+<b>Profile photo</b>
+<span>JPG or PNG. Maximum 5 MB.</span>
+<button type="button">Change photo</button>
+</div>
+</div>
+<div class="fields">
+<label>Full name<input id="profile-full-name" name="fullName" value="">
+</label>
+<label>Headline<input value="Founder at CampusSphere">
+</label>
+<label>College / university<input id="profile-college" name="college" value="">
+</label>
+<label>Course<input id="profile-course" name="course" value="">
+</label>
+<label>Year<select id="profile-year" name="year">
+<option>1st year</option>
+<option>2nd year</option>
+<option>3rd year</option>
+<option>4th year</option>
+<option>Postgraduate</option>
+</select>
+</label>
+<label>Location<input id="profile-location" name="location" value="">
+</label>
+<label>Avatar URL<input id="profile-avatar" name="avatar" type="url" placeholder="https://example.com/photo.jpg">
+</label>
+<label>Skills<input id="profile-skills" name="skills" placeholder="e.g. React, Product Design">
+</label>
+<label>Interests<input id="profile-interests" name="interests" placeholder="e.g. Technology, Design">
+</label>
+</div>
+<label>About<textarea id="profile-bio" name="bio"></textarea>
+</label>
+<hr>
+<h2>Notification preferences</h2>
+<div class="toggles">
+<label>New connections <input type="checkbox" checked>
+<i>
+</i>
+</label>
+<label>Event reminders <input type="checkbox" checked>
+<i>
+</i>
+</label>
+<label>Project activity <input type="checkbox" checked>
+<i>
+</i>
+</label>
+<label>Community activity <input type="checkbox">
+<i>
+</i>
+</label>
+</div>
+</form>
+</section>
+</div>
+</main>
+</body>
+</html>
