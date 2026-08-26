@@ -42,6 +42,7 @@ export const studentAcademicOverview: RequestHandler = asyncHandler(async (req, 
             include: {
               ...classSectionInclude,
               teachingAssignments: {
+                where: { isActive: true, subject: { archivedAt: null } },
                 include: {
                   subject: true,
                   teacher: { select: { id: true, fullName: true, avatar: true } }
@@ -101,8 +102,8 @@ const ensureRoster = async (classSectionId: string, records: Array<{ studentId: 
 
 export const teacherClassStudents: RequestHandler = asyncHandler(async (req, res) => {
   const assignment = await assignmentForTeacher(req.auth!.sub, firstParam(req.params.assignmentId));
-  const enrollments = await prisma.studentEnrollment.findMany({ where: { classSectionId: assignment.classSectionId, status: 'ACTIVE' }, orderBy: { student: { fullName: 'asc' } }, include: { student: { select: { id: true, fullName: true, avatar: true } } } });
-  res.json({ success: true, data: { assignment, students: enrollments.map(({ student }) => student) } });
+  const enrollments = await prisma.studentEnrollment.findMany({ where: { classSectionId: assignment.classSectionId, status: 'ACTIVE' }, orderBy: { student: { fullName: 'asc' } }, include: { student: { select: { id: true, fullName: true, email: true, avatar: true } } } });
+  res.json({ success: true, data: { assignment, students: enrollments.map(({ student, rollNumber }) => ({ ...student, rollNumber })) } });
 });
 
 export const submitAttendance: RequestHandler = asyncHandler(async (req, res) => {
@@ -121,7 +122,7 @@ export const submitAttendance: RequestHandler = asyncHandler(async (req, res) =>
 
 export const teacherAttendanceHistory: RequestHandler = asyncHandler(async (req, res) => {
   const sessions = await prisma.attendanceSession.findMany({ where: { teachingAssignment: { teacherId: req.auth!.sub } }, orderBy: { startsAt: 'desc' }, include: { teachingAssignment: { include: { subject: true, classSection: true } }, records: true } });
-  res.json({ success: true, data: sessions.map((session) => { const present = session.records.filter((record) => record.status === 'PRESENT').length; const absent = session.records.filter((record) => record.status === 'ABSENT').length; return { ...session, present, absent, total: session.records.length, percentage: session.records.length ? Math.round((present / session.records.length) * 100) : 0, records: undefined }; }) });
+  res.json({ success: true, data: sessions.map((session) => { const present = session.records.filter((record) => ['PRESENT', 'LATE'].includes(record.status)).length; const absent = session.records.filter((record) => record.status === 'ABSENT').length; return { ...session, present, absent, total: session.records.length, percentage: session.records.length ? Math.round((present / session.records.length) * 100) : 0, records: undefined }; }) });
 });
 
 export const teacherAttendanceSession: RequestHandler = asyncHandler(async (req, res) => {
@@ -143,7 +144,7 @@ const attendanceIndicator = (percentage: number) => percentage >= 75 ? 'GOOD' : 
 export const studentAttendanceSummary: RequestHandler = asyncHandler(async (req, res) => {
   const records = await prisma.attendanceRecord.findMany({ where: { studentId: req.auth!.sub, attendanceSession: { status: 'SUBMITTED' } }, orderBy: { attendanceSession: { startsAt: 'desc' } }, include: { attendanceSession: { include: { teachingAssignment: { include: { subject: true, teacher: { select: { id: true, fullName: true } } } } } } } });
   const grouped = new Map<string, { subject: typeof records[number]['attendanceSession']['teachingAssignment']['subject']; teacher: { id: string; fullName: string }; present: number; absent: number; total: number }>();
-  for (const record of records) { const { subject, teacher } = record.attendanceSession.teachingAssignment; const item = grouped.get(subject.id) || { subject, teacher, present: 0, absent: 0, total: 0 }; item.total += 1; if (record.status === 'PRESENT') item.present += 1; if (record.status === 'ABSENT') item.absent += 1; grouped.set(subject.id, item); }
+  for (const record of records) { const { subject, teacher } = record.attendanceSession.teachingAssignment; const item = grouped.get(subject.id) || { subject, teacher, present: 0, absent: 0, total: 0 }; item.total += 1; if (['PRESENT', 'LATE'].includes(record.status)) item.present += 1; if (record.status === 'ABSENT') item.absent += 1; grouped.set(subject.id, item); }
   const subjects = [...grouped.values()].map((item) => { const percentage = item.total ? Math.round((item.present / item.total) * 100) : 0; return { ...item, percentage, indicator: attendanceIndicator(percentage) }; });
   const present = subjects.reduce((sum, item) => sum + item.present, 0); const total = subjects.reduce((sum, item) => sum + item.total, 0); const percentage = total ? Math.round((present / total) * 100) : 0;
   res.json({ success: true, data: { overall: { present, absent: subjects.reduce((sum, item) => sum + item.absent, 0), total, percentage, indicator: attendanceIndicator(percentage) }, subjects } });
@@ -152,7 +153,7 @@ export const studentAttendanceSummary: RequestHandler = asyncHandler(async (req,
 export const studentSubjectAttendance: RequestHandler = asyncHandler(async (req, res) => {
   const subjectId = firstParam(req.params.subjectId); const records = await prisma.attendanceRecord.findMany({ where: { studentId: req.auth!.sub, attendanceSession: { status: 'SUBMITTED', teachingAssignment: { subjectId } } }, orderBy: { attendanceSession: { startsAt: 'desc' } }, include: { attendanceSession: { include: { teachingAssignment: { include: { subject: true, teacher: { select: { id: true, fullName: true } } } } } } } });
   if (!records.length) throw new AppError(404, 'ATTENDANCE_NOT_FOUND', 'No attendance records exist for this subject.');
-  const present = records.filter((record) => record.status === 'PRESENT').length; const absent = records.filter((record) => record.status === 'ABSENT').length; const percentage = Math.round((present / records.length) * 100);
+  const present = records.filter((record) => ['PRESENT', 'LATE'].includes(record.status)).length; const absent = records.filter((record) => record.status === 'ABSENT').length; const percentage = Math.round((present / records.length) * 100);
   const assignment = records[0].attendanceSession.teachingAssignment;
   res.json({ success: true, data: { subject: assignment.subject, teacher: assignment.teacher, present, absent, total: records.length, percentage, indicator: attendanceIndicator(percentage), history: records.map((record) => ({ id: record.id, status: record.status, startsAt: record.attendanceSession.startsAt })) } });
 });
@@ -171,13 +172,13 @@ const managedSubject = async (teacherId: string, subjectId: string) => {
   if (!subject) throw new AppError(404, 'SUBJECT_NOT_AUTHORIZED', 'This subject is not within your teaching scope.'); return subject;
 };
 
-export const teacherSubjects: RequestHandler = asyncHandler(async (req, res) => { const subjects = await prisma.subject.findMany({ where: { archivedAt: null, OR: [{ createdByTeacherId: req.auth!.sub }, { teachingAssignments: { some: { teacherId: req.auth!.sub } } }] }, orderBy: { name: 'asc' }, include: { teachingAssignments: { where: { teacherId: req.auth!.sub }, include: { classSection: true } } } }); res.json({ success: true, data: subjects }); });
+export const teacherSubjects: RequestHandler = asyncHandler(async (req, res) => { const subjects = await prisma.subject.findMany({ where: { archivedAt: null, teachingAssignments: { some: { teacherId: req.auth!.sub, isActive: true } } }, orderBy: { name: 'asc' }, include: { department: true, teachingAssignments: { where: { teacherId: req.auth!.sub, isActive: true }, include: { classSection: { include: { program: true, term: true } } } } } }); res.json({ success: true, data: subjects }); });
 export const teacherSetupOptions: RequestHandler = asyncHandler(async (req, res) => { const scope = await teacherScope(req.auth!.sub); const terms = scope.academicProgramId ? await prisma.academicTerm.findMany({ where: { college: { departments: { some: { programs: { some: { id: scope.academicProgramId } } } } } }, orderBy: { startsAt: 'desc' } }) : []; res.json({ success: true, data: { scope, terms } }); });
 export const createTeacherSubject: RequestHandler = asyncHandler(async (req, res) => { const { body } = subjectSchema.parse({ body: req.body }); const scope = await teacherScope(req.auth!.sub); if (!scope.departmentId) throw new AppError(409, 'ACADEMIC_SCOPE_REQUIRED', 'Your teacher profile must be linked to a department before creating subjects.'); const subject = await prisma.subject.create({ data: { ...body, departmentId: scope.departmentId, createdByTeacherId: req.auth!.sub } }); res.status(201).json({ success: true, data: subject }); });
 export const updateTeacherSubject: RequestHandler = asyncHandler(async (req, res) => { const id = firstParam(req.params.subjectId); await managedSubject(req.auth!.sub, id); const { body } = subjectUpdateSchema.parse({ body: req.body }); const subject = await prisma.subject.update({ where: { id }, data: body }); res.json({ success: true, data: subject }); });
 export const archiveTeacherSubject: RequestHandler = asyncHandler(async (req, res) => { const id = firstParam(req.params.subjectId); await managedSubject(req.auth!.sub, id); const activeSessions = await prisma.attendanceSession.count({ where: { teachingAssignment: { subjectId: id } } }); const subject = await prisma.subject.update({ where: { id }, data: { archivedAt: new Date() } }); res.json({ success: true, data: { ...subject, preservedAttendanceSessions: activeSessions } }); });
 
-export const teacherClasses: RequestHandler = asyncHandler(async (req, res) => { const classes = await prisma.classSection.findMany({ where: { OR: [{ teacherAccess: { some: { teacherId: req.auth!.sub } } }, { teachingAssignments: { some: { teacherId: req.auth!.sub } } }] }, orderBy: { name: 'asc' }, include: { ...classSectionInclude, _count: { select: { enrollments: { where: { status: 'ACTIVE' } } } }, teachingAssignments: { where: { teacherId: req.auth!.sub }, include: { subject: true } } } }); res.json({ success: true, data: classes }); });
+export const teacherClasses: RequestHandler = asyncHandler(async (req, res) => { const classes = await prisma.classSection.findMany({ where: { OR: [{ teacherAccess: { some: { teacherId: req.auth!.sub } } }, { teachingAssignments: { some: { teacherId: req.auth!.sub, isActive: true } } }] }, orderBy: { name: 'asc' }, include: { ...classSectionInclude, _count: { select: { enrollments: { where: { status: 'ACTIVE' } } } }, teachingAssignments: { where: { teacherId: req.auth!.sub, isActive: true }, include: { subject: true } } } }); res.json({ success: true, data: classes }); });
 export const createTeacherClass: RequestHandler = asyncHandler(async (req, res) => { const { body } = classSchema.parse({ body: req.body }); const scope = await teacherScope(req.auth!.sub); if (!scope.academicProgramId) throw new AppError(409, 'ACADEMIC_SCOPE_REQUIRED', 'Your teacher profile must be linked to an academic program before creating classes.'); const term = await prisma.academicTerm.findFirst({ where: { id: body.termId, college: { departments: { some: { programs: { some: { id: scope.academicProgramId } } } } } } }); if (!term) throw new AppError(404, 'TERM_NOT_AUTHORIZED', 'The selected term is outside your academic program.'); const section = await prisma.$transaction(async (tx) => { const created = await tx.classSection.create({ data: { ...body, programId: scope.academicProgramId!, createdByTeacherId: req.auth!.sub } }); await tx.teacherClassAccess.create({ data: { teacherId: req.auth!.sub, classSectionId: created.id } }); return created; }); res.status(201).json({ success: true, data: section }); });
 export const teacherClassDetails: RequestHandler = asyncHandler(async (req, res) => { res.json({ success: true, data: await managedClass(req.auth!.sub, firstParam(req.params.classSectionId)) }); });
 export const assignTeacherSubject: RequestHandler = asyncHandler(async (req, res) => { const classSectionId = firstParam(req.params.classSectionId), subjectId = firstParam(req.params.subjectId); await managedClass(req.auth!.sub, classSectionId); const subject = await managedSubject(req.auth!.sub, subjectId); if (subject.archivedAt) throw new AppError(409, 'SUBJECT_ARCHIVED', 'Archived subjects cannot be assigned.'); const assignment = await prisma.teachingAssignment.upsert({ where: { teacherId_subjectId_classSectionId: { teacherId: req.auth!.sub, subjectId, classSectionId } }, update: {}, create: { teacherId: req.auth!.sub, subjectId, classSectionId } }); res.status(201).json({ success: true, data: assignment }); });
@@ -191,7 +192,7 @@ export const studentTimetable: RequestHandler = asyncHandler(async (req, res) =>
 
 export const teacherClass: RequestHandler = asyncHandler(async (req, res) => {
   const assignment = await prisma.teachingAssignment.findFirst({
-    where: { teacherId: req.auth!.sub, classSectionId: firstParam(req.params.classSectionId) },
+    where: { teacherId: req.auth!.sub, classSectionId: firstParam(req.params.classSectionId), isActive: true },
     include: {
       subject: true,
       classSection: {
