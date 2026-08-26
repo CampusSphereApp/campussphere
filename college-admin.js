@@ -83,10 +83,18 @@ function renderTimetable() {
 if (admin) {
   await reload();
   $('.mobile-academic-menu').addEventListener('click', () => $('#admin-sidebar').classList.toggle('open'));
-  document.querySelectorAll('.academic-nav a').forEach(link => link.addEventListener('click', () => {
-    const panel = link.getAttribute('href').slice(1); document.querySelectorAll('.academic-nav a').forEach(v => v.classList.toggle('active', v === link)); document.querySelectorAll('.admin-panel').forEach(v => { v.hidden = v.dataset.panel !== panel; }); $('#admin-sidebar').classList.remove('open');
-  }));
-  document.querySelector('[data-go-setup]').addEventListener('click', () => document.querySelector('.academic-nav a[href="#setup"]').click());
+  const panelNames = new Set([...document.querySelectorAll('.admin-panel')].map(panel => panel.dataset.panel));
+  const activatePanel = requested => {
+    const panelName = panelNames.has(requested) ? requested : 'dashboard';
+    document.querySelectorAll('.academic-nav a').forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${panelName}`));
+    document.querySelectorAll('.admin-panel').forEach(panel => { panel.hidden = panel.dataset.panel !== panelName; });
+    $('#admin-sidebar').classList.remove('open');
+    if (window.location.hash !== `#${panelName}`) history.replaceState(null, '', `#${panelName}`);
+  };
+  document.querySelectorAll('.academic-nav a').forEach(link => link.addEventListener('click', event => { event.preventDefault(); const panel = link.getAttribute('href').slice(1); history.pushState(null, '', `#${panel}`); activatePanel(panel); }));
+  window.addEventListener('hashchange', () => activatePanel(window.location.hash.slice(1)));
+  activatePanel(window.location.hash.slice(1) || 'dashboard');
+  document.querySelector('[data-go-setup]')?.addEventListener('click', () => { history.pushState(null, '', '#setup'); activatePanel('setup'); });
   document.querySelectorAll('[data-create]').forEach(form => form.addEventListener('submit', async event => {
     event.preventDefault(); const button = form.querySelector('button'); button.disabled = true;
     try { const body = payload(form); await api(`/academic/institution/${form.dataset.create}`, { method: 'POST', body: JSON.stringify(body) }); form.reset(); notice('Saved successfully.'); await reload(); } catch (error) { notice(error.message, true); } finally { button.disabled = false; }

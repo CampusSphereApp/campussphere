@@ -12,6 +12,13 @@ const ROLE_LABELS = {
   ADMIN: 'Admin'
 };
 
+const iconPaths = {
+  dashboard: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>',
+  discover: '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"/>', social: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  communities: '<circle cx="12" cy="8" r="4"/><path d="M4 21v-2a6 6 0 0 1 12 0v2M18 8a3 3 0 1 1 0 6"/>', events: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/>', projects: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V4h8v3M3 12h18"/>', opportunities: '<path d="M9 18h6M10 22h4M8.5 14.5A7 7 0 1 1 15.5 14.5c-.9.7-1.5 1.5-1.5 2.5h-4c0-1-.6-1.8-1.5-2.5Z"/>', academics: '<path d="m3 10 9-5 9 5-9 5-9-5Z"/><path d="M7 12.5V17c3 2 7 2 10 0v-4.5M21 10v6"/>', messages: '<path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/>', notifications: '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>', profile: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>', settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3V2.8h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/>', logout: '<path d="M10 17l5-5-5-5M15 12H3M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>'
+};
+const icon = name => `<svg class="internal-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${iconPaths[name]}</svg>`;
+
 
 const currentPage = () => {
   const file =
@@ -64,37 +71,42 @@ const navigation = session => {
   return [
     {
       href: 'dashboard.html',
-      icon: '⌂',
+      icon: 'dashboard',
       label: 'Dashboard'
     },
     {
       href: 'discover.html',
-      icon: '◈',
+      icon: 'discover',
       label: 'Discover'
     },
     {
+  href: 'social-network.html',
+  icon: 'social',
+  label: 'Social Network'
+},
+    {
       href: 'communities.html',
-      icon: '◎',
+      icon: 'communities',
       label: 'Communities'
     },
     {
       href: 'events.html',
-      icon: '◷',
+      icon: 'events',
       label: 'Events'
     },
     {
       href: 'projects.html',
-      icon: '◇',
+      icon: 'projects',
       label: 'Projects'
     },
     {
       href: 'opportunities.html',
-      icon: '↗',
+      icon: 'opportunities',
       label: 'Opportunities'
     },
     {
       href: academics,
-      icon: '▣',
+      icon: 'academics',
       label: 'Academics',
       academics: true
     },
@@ -103,22 +115,22 @@ const navigation = session => {
     },
     {
       href: 'messages.html',
-      icon: '◌',
+      icon: 'messages',
       label: 'Messages'
     },
     {
       href: 'notifications.html',
-      icon: '♧',
+      icon: 'notifications',
       label: 'Notifications'
     },
     {
       href: 'profile.html',
-      icon: '♙',
+      icon: 'profile',
       label: 'Profile'
     },
     {
       href: 'settings.html',
-      icon: '⚙',
+      icon: 'settings',
       label: 'Settings'
     }
   ];
@@ -160,7 +172,7 @@ const createSidebar = session => {
             ${item.academics ? 'data-academics-link' : ''}
             ${selected ? 'class="selected"' : ''}
           >
-            ${item.icon}
+            ${icon(item.icon)}
             <span>${item.label}</span>
           </a>
         `;
@@ -206,7 +218,7 @@ const createSidebar = session => {
         aria-label="Log out"
         title="Log out"
       >
-        ↪
+        ${icon('logout')}
       </button>
 
     </div>
@@ -226,7 +238,6 @@ const createTopbar = () => {
   topbar.className =
     'internal-topbar';
 
-
   topbar.innerHTML = `
 
     <button
@@ -238,7 +249,6 @@ const createTopbar = () => {
     </button>
 
     <div class="internal-topbar-search">
-
       ⌕
 
       <input
@@ -247,7 +257,6 @@ const createTopbar = () => {
         placeholder="Search CampusSphere"
         autocomplete="off"
       >
-
     </div>
 
     <div class="internal-top-actions">
@@ -257,25 +266,52 @@ const createTopbar = () => {
         aria-label="Notifications"
         title="Notifications"
       >
-        ♧
+        ${icon('notifications')}
       </a>
 
-      <a
-        href="profile.html"
-        aria-label="Profile"
-      >
-        <img
-          data-current-user-avatar
-          alt="Current user"
+      <div class="internal-account-menu">
+
+        <button
+          class="internal-account-trigger"
+          type="button"
+          aria-label="Account menu"
+          aria-expanded="false"
         >
-      </a>
+          <img
+            data-current-user-avatar
+            alt="Current user"
+          >
+        </button>
+
+        <div
+          class="internal-account-dropdown"
+          hidden
+        >
+
+          <a href="profile.html">
+            View profile
+          </a>
+
+          <a href="settings.html">
+            Settings
+          </a>
+
+          <button
+            class="danger"
+            type="button"
+            data-account-logout
+          >
+            Log out
+          </button>
+
+        </div>
+
+      </div>
 
     </div>
   `;
 
-
   return topbar;
-
 };
 
 
@@ -671,8 +707,7 @@ const wireLogout =
           'Log out';
 
 
-        button.textContent =
-          '↪';
+        button.innerHTML = icon('logout');
 
 
         account.append(button);
@@ -819,7 +854,107 @@ const wireGlobalSearch =
 
 };
 
+const wireAccountMenu = shell => {
 
+  const trigger =
+    shell.querySelector(
+      '.internal-account-trigger'
+    );
+
+  const menu =
+    shell.querySelector(
+      '.internal-account-dropdown'
+    );
+
+  if (!trigger || !menu) return;
+
+
+  const close = () => {
+
+    menu.hidden = true;
+
+    trigger.setAttribute(
+      'aria-expanded',
+      'false'
+    );
+
+  };
+
+
+  trigger.addEventListener(
+    'click',
+    event => {
+
+      event.stopPropagation();
+
+      menu.hidden =
+        !menu.hidden;
+
+      trigger.setAttribute(
+        'aria-expanded',
+        String(!menu.hidden)
+      );
+
+    }
+  );
+
+
+  document.addEventListener(
+    'click',
+    event => {
+
+      if (
+        !event.target.closest(
+          '.internal-account-menu'
+        )
+      ) {
+
+        close();
+
+      }
+
+    }
+  );
+
+
+  document.addEventListener(
+    'keydown',
+    event => {
+
+      if (event.key === 'Escape') {
+        close();
+      }
+
+    }
+  );
+
+
+  menu
+    .querySelector(
+      '[data-account-logout]'
+    )
+    ?.addEventListener(
+      'click',
+      async () => {
+
+        try {
+
+          await logout();
+
+        }
+
+        finally {
+
+          window.location.assign(
+            'login.html'
+          );
+
+        }
+
+      }
+    );
+
+};
 const initInternalShell =
   async () => {
 
@@ -883,7 +1018,9 @@ const initInternalShell =
     wireLogout(
       shell
     );
-
+wireAccountMenu(
+  shell
+);
 
     wireMobileNavigation(
       shell

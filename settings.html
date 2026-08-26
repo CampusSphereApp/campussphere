@@ -3,14 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Settings â€” CampusSphere</title>
+<title>Settings — CampusSphere</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="profile.css">
 <link rel="stylesheet" href="settings-about.css">
-<script defer src="profile.js">
-</script>
+<script type="module" src="settings.js"></script>
   <link rel="stylesheet" href="internal-shell.css">
   <script type="module" src="internal-shell.js"></script>
 </head>
@@ -59,8 +58,6 @@
 <div class="fields">
 <label>Full name<input id="profile-full-name" name="fullName" value="">
 </label>
-<label>Headline<input value="Founder at CampusSphere">
-</label>
 <label>College / university<input id="profile-college" name="college" value="">
 </label>
 <label>Course<input id="profile-course" name="course" value="">
@@ -75,12 +72,8 @@
 </label>
 <label>Location<input id="profile-location" name="location" value="">
 </label>
-<label>Avatar URL<input id="profile-avatar" name="avatar" type="url" placeholder="https://example.com/photo.jpg">
-</label>
-<label>Skills<input id="profile-skills" name="skills" placeholder="e.g. React, Product Design">
-</label>
-<label>Interests<input id="profile-interests" name="interests" placeholder="e.g. Technology, Design">
-</label>
+<div class="tag-field"><span>Skills</span><div id="profile-skills" class="tag-editor"></div><div class="tag-add"><input id="profile-skill-input" maxlength="50" placeholder="Add a skill"><button id="add-skill" type="button">Add</button></div></div>
+<div class="tag-field"><span>Interests</span><div id="profile-interests" class="tag-editor"></div><div class="tag-add"><input id="profile-interest-input" maxlength="50" placeholder="Add an interest"><button id="add-interest" type="button">Add</button></div></div>
 </div>
 <label>About<textarea id="profile-bio" name="bio"></textarea>
 </label>
