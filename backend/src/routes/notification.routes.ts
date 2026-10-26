@@ -14,6 +14,10 @@ const present = async (item: any, userId: string) => {
     const actionable = Boolean(connection && connection.recipientId === userId && connection.status === ConnectionStatus.PENDING);
     return { ...item, actionable, resolved: !actionable, target: connection ? { kind: 'profile', userId: connection.requesterId } : null };
   }
+  if (typeof data.conversationId === 'string') return { ...item, actionable: false, resolved: false, target: { kind: 'message', conversationId: data.conversationId } };
+  if (typeof data.communityId === 'string') return { ...item, actionable: false, resolved: false, target: { kind: 'community', communityId: data.communityId } };
+  if (typeof data.eventId === 'string') return { ...item, actionable: false, resolved: false, target: { kind: 'event', eventId: data.eventId } };
+  if (typeof data.postId === 'string') return { ...item, actionable: false, resolved: false, target: { kind: 'social' } };
   const projectId = typeof data.projectId === 'string' ? data.projectId : null, opportunityId = typeof data.opportunityId === 'string' ? data.opportunityId : null;
   return { ...item, actionable: false, resolved: false, target: opportunityId ? { kind: 'opportunity', opportunityId } : projectId ? { kind: 'project', projectId } : null };
 };

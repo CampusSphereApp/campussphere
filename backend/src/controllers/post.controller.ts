@@ -6,6 +6,9 @@ import { fileURLToPath } from 'node:url';
 import multer from 'multer';
 
 import { prisma } from '../config/prisma.js';
+import { createPreferredNotification, createPreferredNotifications } from '../services/notification-preference.service.js';
+import { canViewProfile, redactProfileFields, visibleActivityWhere } from '../services/profile-privacy.service.js';
+import { privacyOf } from '../utils/settings.js';
 
 import { AppError } from '../utils/app-error.js';
 
@@ -97,6 +100,8 @@ export const listPosts: RequestHandler =
         );
 
 
+      const communityId = typeof req.query.communityId === 'string' ? req.query.communityId : undefined;
+      const where = { ...(communityId ? { communityId } : {}), ...visibleActivityWhere(req.auth!.sub) };
       const [data, total] =
         await prisma.$transaction([
 
@@ -108,6 +113,7 @@ export const listPosts: RequestHandler =
             take:
               limit,
 
+            where,
             orderBy: {
               createdAt: 'desc'
             },
@@ -116,7 +122,7 @@ export const listPosts: RequestHandler =
           }),
 
 
-          prisma.post.count()
+          prisma.post.count({ where })
 
         ]);
 
@@ -155,6 +161,13 @@ export const userPosts: RequestHandler =
         String(
           req.params.userId
         );
+
+      if (userId !== req.auth!.sub) {
+        const target = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, privacySettings: true } });
+        if (!target || !privacyOf(target.privacySettings).showActivity || !await canViewProfile(target, req.auth!.sub)) {
+          throw new AppError(404, 'POSTS_NOT_AVAILABLE', 'Posts are not available.');
+        }
+      }
 
 
       const data =
@@ -231,9 +244,7 @@ export const socialFeed: RequestHandler =
         );
 
 
-      const where = {
-        communityId: null
-      };
+      const where = { communityId: null, ...visibleActivityWhere(userId) };
 
 
       const [posts, total] =
@@ -264,7 +275,8 @@ export const socialFeed: RequestHandler =
                   college: true,
                   course: true,
                   year: true,
-                  role: true
+                  role: true,
+                  privacySettings: true
                 }
               },
 
@@ -317,7 +329,7 @@ export const socialFeed: RequestHandler =
               post.updatedAt,
 
             author:
-              post.author,
+              redactProfileFields(post.author, userId),
 
             likeCount:
               post._count.likes,
@@ -448,8 +460,8 @@ if (
       }
 
 
-      const data =
-        await prisma.post.create({
+      const data = await prisma.$transaction(async tx => {
+        const post = await tx.post.create({
 
           data: {
 
@@ -475,6 +487,14 @@ if (
           include
 
         });
+        if (communityId) {
+          const members = await tx.communityMember.findMany({ where: { communityId, userId: { not: req.auth!.sub } }, select: { userId: true } });
+          await createPreferredNotifications(members.map(member => member.userId), 'communities', {
+            type: 'COMMUNITY_ACTIVITY', title: 'New community post', message: `New discussion in ${post.community?.name || 'your community'}.`, data: { communityId, postId: post.id }
+          }, tx);
+        }
+        return post;
+      });
 
 
       res
@@ -563,82 +583,18 @@ export const deletePost: RequestHandler =
    LIKE
    ============================================================ */
 
-export const likePost: RequestHandler =
-  asyncHandler(
-    async (req, res) => {
-
-      const postId =
-        String(
-          req.params.id
-        );
-
-
-      /*
-       * Ensure the post exists first,
-       * giving a clean 404 instead of
-       * leaking a Prisma FK error.
-       */
-
-      const exists =
-        await prisma.post.findUnique({
-
-          where: {
-            id: postId
-          },
-
-          select: {
-            id: true
-          }
-
-        });
-
-
-      if (!exists) {
-
-        throw new AppError(
-          404,
-          'NOT_FOUND',
-          'Post not found.'
-        );
-
-      }
-
-
-      await prisma.postLike.upsert({
-
-        where: {
-
-          postId_userId: {
-
-            postId,
-
-            userId:
-              req.auth!.sub
-
-          }
-
-        },
-
-        update: {},
-
-        create: {
-
-          postId,
-
-          userId:
-            req.auth!.sub
-
-        }
-
-      });
-
-
-      res
-        .status(204)
-        .send();
-
-    }
-  );
+export const likePost: RequestHandler = asyncHandler(async (req, res) => {
+  const postId = String(req.params.id);
+  const post = await prisma.post.findUnique({ where: { ...visibleActivityWhere(req.auth!.sub), id: postId }, select: { id: true, authorId: true } });
+  if (!post) throw new AppError(404, 'NOT_FOUND', 'Post not found.');
+  await prisma.$transaction(async tx => {
+    const result = await tx.postLike.createMany({ data: [{ postId, userId: req.auth!.sub }], skipDuplicates: true });
+    if (result.count && post.authorId !== req.auth!.sub) await createPreferredNotification(post.authorId, 'socialActivity', {
+      userId: post.authorId, type: 'SYSTEM', title: 'New like', message: 'Someone liked your post.', data: { postId }
+    }, tx);
+  });
+  res.status(204).send();
+});
 
 
 /* ============================================================
@@ -723,11 +679,11 @@ export const comment: RequestHandler =
         await prisma.post.findUnique({
 
           where: {
-            id: postId
+            ...visibleActivityWhere(req.auth!.sub), id: postId
           },
 
           select: {
-            id: true
+            id: true, authorId: true
           }
 
         });
@@ -744,8 +700,8 @@ export const comment: RequestHandler =
       }
 
 
-      const data =
-        await prisma.comment.create({
+      const data = await prisma.$transaction(async tx => {
+        const created = await tx.comment.create({
 
           data: {
 
@@ -777,6 +733,11 @@ export const comment: RequestHandler =
           }
 
         });
+        if (exists.authorId !== req.auth!.sub) await createPreferredNotification(exists.authorId, 'socialActivity', {
+          userId: exists.authorId, type: 'SYSTEM', title: 'New comment', message: 'Someone commented on your post.', data: { postId, commentId: created.id }
+        }, tx);
+        return created;
+      });
 
 
       res
@@ -800,6 +761,9 @@ export const comment: RequestHandler =
 export const comments: RequestHandler =
   asyncHandler(
     async (req, res) => {
+
+      const post = await prisma.post.findUnique({ where: { ...visibleActivityWhere(req.auth!.sub), id: String(req.params.id) }, select: { id: true } });
+      if (!post) throw new AppError(404, 'NOT_FOUND', 'Post not found.');
 
       const data =
         await prisma.comment.findMany({

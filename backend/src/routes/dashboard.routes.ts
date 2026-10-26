@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { UserRole } from '@prisma/client';
 import { prisma } from '../config/prisma.js';
 import { authenticate, authorizeRoles } from '../middleware/authenticate.js';
+import { visibleActivityWhere } from '../services/profile-privacy.service.js';
 import { asyncHandler } from '../utils/async-handler.js';
 
 export const dashboardRouter = Router();
@@ -13,7 +14,7 @@ dashboardRouter.get('/', authenticate, authorizeRoles(UserRole.STUDENT), asyncHa
     prisma.project.findMany({ where: { status: 'RECRUITING' }, take: 5, include: { roles: true } }),
     prisma.community.findMany({ take: 5, include: { _count: { select: { members: true } } } }),
     prisma.notification.count({ where: { userId: req.auth!.sub, read: false } }),
-    prisma.post.findMany({ take: 8, orderBy: { createdAt: 'desc' }, include: { author: { select: { id: true, fullName: true, avatar: true } } } }),
+    prisma.post.findMany({ where: visibleActivityWhere(req.auth!.sub), take: 8, orderBy: { createdAt: 'desc' }, include: { author: { select: { id: true, fullName: true, avatar: true } } } }),
   ]);
   res.json({ success: true, data: { user, upcomingEvents: events, recommendedProjects: projects, recommendedCommunities: communities, unreadNotifications, recentActivity } });
 }));

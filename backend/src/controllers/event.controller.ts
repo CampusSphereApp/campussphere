@@ -1,5 +1,7 @@
+import { redactProfileFields } from '../services/profile-privacy.service.js';
 import type { RequestHandler } from 'express';
 import { EventParticipantStatus } from '@prisma/client';
+import { createPreferredNotifications } from '../services/notification-preference.service.js';
 import { prisma } from '../config/prisma.js';
 import { AppError } from '../utils/app-error.js';
 import { asyncHandler } from '../utils/async-handler.js';
@@ -23,8 +25,8 @@ export const listEvents: RequestHandler = asyncHandler(async (req, res) => {
 export const getEvent: RequestHandler = asyncHandler(async (req, res) => {
   const id = idOf(req.params.id); if (!id) throw new AppError(400, 'VALIDATION_ERROR', 'Event ID is required.');
   const event = await prisma.event.findUnique({ where: { id }, select: fields(req.auth!.sub) }); if (!event) throw new AppError(404, 'EVENT_NOT_FOUND', 'Event not found.');
-  const organizer = await prisma.user.findUnique({ where: { id: event.organizerId }, select: { id: true, fullName: true, avatar: true, college: true, course: true } });
-  res.json({ success: true, data: { ...present(event), organizer } });
+  const organizer = await prisma.user.findUnique({ where: { id: event.organizerId }, select: { id: true, fullName: true, avatar: true, privacySettings: true, college: true, course: true } });
+  res.json({ success: true, data: { ...present(event), organizer: organizer ? redactProfileFields(organizer, req.auth!.sub) : null } });
 });
 
 export const createEvent: RequestHandler = asyncHandler(async (req, res) => {
@@ -37,8 +39,8 @@ export const createEvent: RequestHandler = asyncHandler(async (req, res) => {
   res.status(201).json({ success: true, data });
 });
 
-export const updateEvent: RequestHandler = asyncHandler(async (req, res) => { const id = idOf(req.params.id); const found = await prisma.event.findUnique({ where: { id } }); if (!found) throw new AppError(404, 'EVENT_NOT_FOUND', 'Event not found.'); if (found.organizerId !== req.auth!.sub) throw new AppError(403, 'FORBIDDEN', 'Only the organizer can edit this event.'); const { organizerId, createdAt, updatedAt, id: ignored, ...body } = req.body as Record<string, unknown>; const data = await prisma.event.update({ where: { id }, data: body }); res.json({ success: true, data }); });
-export const deleteEvent: RequestHandler = asyncHandler(async (req, res) => { const id = idOf(req.params.id); const found = await prisma.event.findUnique({ where: { id } }); if (!found) throw new AppError(404, 'EVENT_NOT_FOUND', 'Event not found.'); if (found.organizerId !== req.auth!.sub) throw new AppError(403, 'FORBIDDEN', 'Only the organizer can delete this event.'); await prisma.event.delete({ where: { id } }); res.status(204).send(); });
+export const updateEvent: RequestHandler = asyncHandler(async (req, res) => { const id = idOf(req.params.id); const found = await prisma.event.findUnique({ where: { id } }); if (!found) throw new AppError(404, 'EVENT_NOT_FOUND', 'Event not found.'); if (found.organizerId !== req.auth!.sub) throw new AppError(403, 'FORBIDDEN', 'Only the organizer can edit this event.'); const { organizerId, createdAt, updatedAt, id: ignored, ...body } = req.body as Record<string, unknown>; const data = await prisma.$transaction(async tx => { const event = await tx.event.update({ where: { id }, data: body }); const participants = await tx.eventParticipant.findMany({ where: { eventId: id, userId: { not: req.auth!.sub }, status: { in: ['REGISTERED', 'WAITLISTED'] } }, select: { userId: true } }); await createPreferredNotifications(participants.map(participant => participant.userId), 'events', { type: 'EVENT_REMINDER', title: 'Event updated', message: `${event.title} has updated event details.`, data: { eventId: id! } }, tx); return event; }); res.json({ success: true, data }); });
+export const deleteEvent: RequestHandler = asyncHandler(async (req, res) => { const id = idOf(req.params.id); const found = await prisma.event.findUnique({ where: { id } }); if (!found) throw new AppError(404, 'EVENT_NOT_FOUND', 'Event not found.'); if (found.organizerId !== req.auth!.sub) throw new AppError(403, 'FORBIDDEN', 'Only the organizer can delete this event.'); await prisma.$transaction(async tx => { const participants = await tx.eventParticipant.findMany({ where: { eventId: id, userId: { not: req.auth!.sub }, status: { in: ['REGISTERED', 'WAITLISTED'] } }, select: { userId: true } }); await createPreferredNotifications(participants.map(participant => participant.userId), 'events', { type: 'EVENT_REMINDER', title: 'Event cancelled', message: `${found.title} has been cancelled.` }, tx); await tx.event.delete({ where: { id } }); }); res.status(204).send(); });
 
 export const register: RequestHandler = asyncHandler(async (req, res) => {
   const id = idOf(req.params.id); const event = await prisma.event.findUnique({ where: { id }, include: { _count: { select: { participants: { where: { status: EventParticipantStatus.REGISTERED } } } } } });
@@ -49,4 +51,4 @@ export const register: RequestHandler = asyncHandler(async (req, res) => {
 });
 
 export const unregister: RequestHandler = asyncHandler(async (req, res) => { const id = idOf(req.params.id); const existing = await prisma.eventParticipant.findUnique({ where: { eventId_userId: { eventId: id!, userId: req.auth!.sub } } }); if (!existing) throw new AppError(404, 'REGISTRATION_NOT_FOUND', 'You are not registered for this event.'); await prisma.eventParticipant.delete({ where: { eventId_userId: { eventId: id!, userId: req.auth!.sub } } }); res.status(204).send(); });
-export const participants: RequestHandler = asyncHandler(async (req, res) => { const id = idOf(req.params.id); const event = await prisma.event.findUnique({ where: { id }, select: { id: true } }); if (!event) throw new AppError(404, 'EVENT_NOT_FOUND', 'Event not found.'); const data = await prisma.eventParticipant.findMany({ where: { eventId: id }, select: { status: true, user: { select: { id: true, fullName: true, avatar: true, college: true, course: true, year: true } } } }); res.json({ success: true, data }); });
+export const participants: RequestHandler = asyncHandler(async (req, res) => { const id = idOf(req.params.id); const event = await prisma.event.findUnique({ where: { id }, select: { id: true } }); if (!event) throw new AppError(404, 'EVENT_NOT_FOUND', 'Event not found.'); const data = await prisma.eventParticipant.findMany({ where: { eventId: id }, select: { status: true, user: { select: { id: true, fullName: true, avatar: true, privacySettings: true, college: true, course: true, year: true } } } }); res.json({ success: true, data: data.map(participant => ({ ...participant, user: redactProfileFields(participant.user, req.auth!.sub) })) }); });

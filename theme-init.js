@@ -9,7 +9,7 @@
   const resolve = preference => preference === 'system' ? (media.matches ? 'dark' : 'light') : preference;
   const apply = (appearance = {}, persist = false) => {
     const theme = validTheme(appearance.theme || localStorage.getItem(THEME_KEY));
-    const accent = appearance.accent || localStorage.getItem(ACCENT_KEY) || 'purple';
+    const accent = appearance.accent || localStorage.getItem(ACCENT_KEY) || 'orange';
     const density = validDensity(appearance.density || localStorage.getItem(DENSITY_KEY));
     document.documentElement.dataset.theme = resolve(theme);
     document.documentElement.dataset.themePreference = theme;

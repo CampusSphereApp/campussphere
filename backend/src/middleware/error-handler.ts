@@ -10,8 +10,9 @@ export const errorHandler: ErrorRequestHandler = (error, req, res, _next) => {
   if (error instanceof multer.MulterError) {
     const tooLarge = error.code === 'LIMIT_FILE_SIZE';
     const isPostMedia = req.path.includes('/posts/media');
-    const limit = isPostMedia ? '8 MB' : '5 MB';
-    return res.status(tooLarge ? 413 : 400).json({ success: false, error: { code: isPostMedia ? 'INVALID_MEDIA' : 'INVALID_AVATAR', message: tooLarge ? `Images must be ${limit} or smaller.` : 'The image upload is invalid.' } });
+    const isCover = req.path.includes('/cover');
+    const limit = isPostMedia || isCover ? '8 MB' : '5 MB';
+    return res.status(tooLarge ? 413 : 400).json({ success: false, error: { code: isPostMedia ? 'INVALID_MEDIA' : isCover ? 'INVALID_COVER' : 'INVALID_AVATAR', message: tooLarge ? `Images must be ${limit} or smaller.` : 'The image upload is invalid.' } });
   }
   if (error instanceof ZodError) {
     const issue = error.issues[0];
@@ -26,5 +27,5 @@ export const errorHandler: ErrorRequestHandler = (error, req, res, _next) => {
     return res.status(error.statusCode).json({ success: false, error: { code: error.code, message: error.message, details: error.details } });
   }
   logger.error(error, 'Unhandled API error');
-  return res.status(500).json({ success: false, error: { code: 'INTERNAL_ERROR', message: env.NODE_ENV === 'production' ? 'An unexpected error occurred.' : (error as Error).message } });
+  return res.status(500).json({ success: false, error: { code: 'INTERNAL_ERROR', message: 'An unexpected error occurred.' } });
 };
