@@ -7,6 +7,7 @@ let importRows = [], classOperations = null;
 const $ = (selector) => document.querySelector(selector);
 const notice = (message, error = false) => { const area = $('#notice'); area.textContent = message; area.classList.toggle('error', error); area.hidden = false; };
 const row = (title, detail = '') => `<div class="record-row"><b>${escapeHtml(title)}</b><small>${escapeHtml(detail)}</small></div>`;
+const managedRow = (type, item, title, detail = '', removeLabel = 'Delete') => `<div class="record-row"><span><b>${escapeHtml(title)}</b><small>${escapeHtml(detail)}</small></span><span class="row-actions"><button type="button" data-edit-entity="${escapeHtml(type)}" data-id="${escapeHtml(item.id)}">Edit</button><button type="button" class="danger" data-remove-entity="${escapeHtml(type)}" data-id="${escapeHtml(item.id)}">${removeLabel}</button></span></div>`;
 const empty = (message) => `<div class="empty-state"><b>${escapeHtml(message)}</b></div>`;
 const options = (items, label, blank = 'Select') => `<option value="">${blank}</option>${items.map(item => `<option value="${escapeHtml(item.id)}">${escapeHtml(label(item))}</option>`).join('')}`;
 
@@ -17,15 +18,15 @@ function render() {
   $('#college-location').textContent = [college.city, college.state, college.country].filter(Boolean).join(', ');
   $('#count-departments').textContent = departments.length; $('#count-teachers').textContent = teachers.length; $('#count-students').textContent = students.length;
   $('#setup-summary').innerHTML = departments.length ? `<b>${departments.length} department${departments.length === 1 ? '' : 's'} configured</b><p>${programs.length} programs, ${classes.length} classes, ${subjects.length} subjects.</p>` : '<b>Academic setup has not started</b><p>Create genuine WIT departments and programs when ready.</p>';
-  $('#department-list').innerHTML = departments.length ? departments.map(v => row(v.name, v.code || 'No code')).join('') : empty('No departments have been added.');
-  $('#program-list').innerHTML = programs.length ? programs.map(v => row(v.name, `${v.department.name}${v.code ? ` · ${v.code}` : ''}`)).join('') : empty('No programs have been added.');
-  $('#academic-year-list').innerHTML = academicYears.length ? academicYears.map(v => `<div class="record-row"><span><b>${escapeHtml(v.name)}</b><small>${escapeHtml(v.status)}</small></span><span><button type="button" class="status-pill" data-edit-year="${escapeHtml(v.id)}">Edit</button></span></div>`).join('') : empty('No academic years have been added.');
-  $('#term-list').innerHTML = terms.length ? terms.map(v => `<div class="record-row"><span><b>${escapeHtml(v.name)}</b><small>${escapeHtml(`${v.academicYear?.name || 'Legacy year'} · ${v.status}`)}</small></span><button type="button" class="status-pill" data-edit-term="${escapeHtml(v.id)}">Edit</button></div>`).join('') : empty('No academic terms have been added.');
-  $('#class-list').innerHTML = classes.length ? classes.map(v => `<div class="record-row"><span><b>${escapeHtml(v.name)}</b><small>${escapeHtml(`${v.program.name} · ${v.term.name} · ${v._count.enrollments} students`)}</small></span><button type="button" class="status-pill" data-manage-class="${escapeHtml(v.id)}">Manage</button></div>`).join('') : empty('No classes or sections have been added.');
-  $('#subject-list').innerHTML = subjects.length ? subjects.map(v => row(`${v.code} — ${v.name}`, v.department.name)).join('') : empty('No subjects have been added.');
-  $('#teacher-list').innerHTML = teachers.length ? teachers.map(v => row(v.fullName, v.email)).join('') : empty('No teachers are linked to WIT.');
-  $('#student-list').innerHTML = students.length ? students.map(v => row(v.fullName, v.email)).join('') : empty('No verified students are linked to WIT.');
-  const pending = invitations.filter(v => v.status === 'PENDING'); $('#invitation-list').innerHTML = pending.length ? pending.map(v => row(v.email, `${v.role} · expires ${new Date(v.expiresAt).toLocaleDateString()}`)).join('') : empty('No pending invitations.');
+  $('#department-list').innerHTML = departments.length ? departments.map(v => managedRow('departments', v, v.name, `${v.code || 'No code'} · ${v._count.programs} programs · ${v._count.subjects} subjects`)).join('') : empty('No departments have been added.');
+  $('#program-list').innerHTML = programs.length ? programs.map(v => managedRow('programs', v, v.name, `${v.department.name}${v.code ? ` · ${v.code}` : ''} · ${v.durationYears || '—'} years · ${v._count.classSections} classes`)).join('') : empty('No programs have been added.');
+  $('#academic-year-list').innerHTML = academicYears.length ? academicYears.map(v => managedRow('academic-years', v, v.name, `${v.status} · ${new Date(v.startsAt).toLocaleDateString()} – ${new Date(v.endsAt).toLocaleDateString()}`)).join('') : empty('No academic years have been added.');
+  $('#term-list').innerHTML = terms.length ? terms.map(v => managedRow('terms', v, v.name, `${v.academicYear?.name || 'Legacy year'} · ${v.status}`)).join('') : empty('No academic terms have been added.');
+  $('#class-list').innerHTML = classes.length ? classes.map(v => `<div class="record-row"><span><b>${escapeHtml(v.name)}</b><small>${escapeHtml(`${v.program.name} · ${v.term.name} · ${v._count.enrollments} students · ${v._count.teachingAssignments} assignments`)}</small></span><span class="row-actions"><button type="button" data-manage-class="${escapeHtml(v.id)}">Manage</button><button type="button" data-edit-entity="classes" data-id="${escapeHtml(v.id)}">Edit</button><button type="button" class="danger" data-remove-entity="classes" data-id="${escapeHtml(v.id)}">Delete</button></span></div>`).join('') : empty('No classes or sections have been added.');
+  $('#subject-list').innerHTML = subjects.length ? subjects.map(v => managedRow('subjects', v, `${v.code} — ${v.name}`, `${v.department.name} · ${v.credits ?? '—'} credits · ${v._count.teachingAssignments} assignments`, 'Archive')).join('') : empty('No subjects have been added.');
+  $('#teacher-list').innerHTML = teachers.length ? teachers.map(v => `<div class="record-row"><span><b>${escapeHtml(v.fullName)}</b><small>${escapeHtml(`${v.email} · ${v.academicDepartment?.name || 'No department'} · ${v.teachingAssignments.length} assignments`)}</small></span></div>`).join('') : empty('No teachers are linked to this institution.');
+  if ($('#student-list')) $('#student-list').innerHTML = students.length ? students.map(v => row(v.fullName, v.email)).join('') : empty('No verified students are linked to this institution.');
+  const pending = invitations.filter(v => v.status === 'PENDING'); $('#invitation-list').innerHTML = pending.length ? pending.map(v => `<div class="record-row"><span><b>${escapeHtml(v.email)}</b><small>${escapeHtml(`${v.role} · expires ${new Date(v.expiresAt).toLocaleDateString()}`)}</small></span><button type="button" class="danger" data-revoke-invite="${escapeHtml(v.id)}">Revoke</button></div>`).join('') : empty('No pending invitations.');
   document.querySelectorAll('select[name="departmentId"]').forEach(el => { const current = el.value; el.innerHTML = options(departments, v => `${v.code || ''} ${v.name}`.trim(), 'Department (optional)'); el.value = current; });
   document.querySelectorAll('select[name="academicProgramId"],select[name="programId"]').forEach(el => { const current = el.value; el.innerHTML = options(programs, v => v.name, el.name === 'programId' ? 'Select program' : 'Program (optional)'); el.value = current; });
   document.querySelectorAll('select[name="academicYearId"]').forEach(el => el.innerHTML = options(academicYears, v => v.name, 'Select academic year'));
@@ -80,13 +81,33 @@ function renderTimetable() {
   $('#timetable-grid').innerHTML = days.map(day => `<section class="day-column"><h3>${day[0] + day.slice(1).toLowerCase()}</h3>${entries.filter(entry => entry.day === day).sort((a,b) => a.startMinutes-b.startMinutes).map(entry => `<article class="lecture-slot"><b>${escapeHtml(entry.teachingAssignment.subject.code)}</b><span>${clock(entry.startMinutes)}–${clock(entry.endMinutes)}</span><small>${escapeHtml(entry.teachingAssignment.teacher.fullName)} · ${escapeHtml(entry.room || 'Room TBA')} · ${escapeHtml(entry.lectureType)}</small><button type="button" data-remove-slot="${escapeHtml(entry.id)}">Remove</button></article>`).join('') || '<p class="muted">No lectures</p>'}</section>`).join('');
 }
 
+async function loadAttendanceSummary() {
+  const data = await api('/academic/institution/attendance/summary');
+  $('#attendance-session-count').textContent = String(data.overall.sessions);
+  $('#attendance-record-count').textContent = String(data.overall.total);
+  $('#attendance-percentage').textContent = `${data.overall.percentage}%`;
+  $('#attendance-class-list').innerHTML = data.classes.length ? data.classes.map(item => row(item.name, `${item.sessions} sessions · ${item.attended}/${item.total} attended · ${item.percentage}%`)).join('') : empty('No attendance has been submitted yet.');
+  $('#attendance-recent-list').innerHTML = data.recent.length ? data.recent.map(item => row(`${item.subject.code} · ${item.classSection.name}`, `${new Date(item.startsAt).toLocaleString()} · ${item.teacher.fullName} · ${item.percentage}%`)).join('') : empty('No recent attendance sessions.');
+}
+
 if (admin) {
   await reload();
   $('.mobile-academic-menu').addEventListener('click', () => $('#admin-sidebar').classList.toggle('open'));
-  document.querySelectorAll('.academic-nav a').forEach(link => link.addEventListener('click', () => {
-    const panel = link.getAttribute('href').slice(1); document.querySelectorAll('.academic-nav a').forEach(v => v.classList.toggle('active', v === link)); document.querySelectorAll('.admin-panel').forEach(v => { v.hidden = v.dataset.panel !== panel; }); $('#admin-sidebar').classList.remove('open');
-  }));
-  document.querySelector('[data-go-setup]').addEventListener('click', () => document.querySelector('.academic-nav a[href="#setup"]').click());
+  const panelNames = new Set([...document.querySelectorAll('.admin-panel')].map(panel => panel.dataset.panel));
+  const panelAliases = { 'academic-years': 'setup', terms: 'setup', 'teaching-assignments': 'classes' };
+  const activatePanel = requested => {
+    const routeName = panelNames.has(requested) || panelAliases[requested] ? requested : 'dashboard';
+    const panelName = panelAliases[routeName] || routeName;
+    document.querySelectorAll('.academic-nav a').forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${routeName}`));
+    document.querySelectorAll('.admin-panel').forEach(panel => { panel.hidden = panel.dataset.panel !== panelName; });
+    $('#admin-sidebar').classList.remove('open');
+    if (window.location.hash !== `#${routeName}`) history.replaceState(null, '', `#${routeName}`);
+    if (routeName === 'attendance') loadAttendanceSummary().catch(error => notice(error.message, true));
+  };
+  document.querySelectorAll('.academic-nav a').forEach(link => link.addEventListener('click', event => { event.preventDefault(); const panel = link.getAttribute('href').slice(1); history.pushState(null, '', `#${panel}`); activatePanel(panel); }));
+  window.addEventListener('hashchange', () => activatePanel(window.location.hash.slice(1)));
+  activatePanel(window.location.hash.slice(1) || 'dashboard');
+  document.querySelector('[data-go-setup]')?.addEventListener('click', () => { history.pushState(null, '', '#setup'); activatePanel('setup'); });
   document.querySelectorAll('[data-create]').forEach(form => form.addEventListener('submit', async event => {
     event.preventDefault(); const button = form.querySelector('button'); button.disabled = true;
     try { const body = payload(form); await api(`/academic/institution/${form.dataset.create}`, { method: 'POST', body: JSON.stringify(body) }); form.reset(); notice('Saved successfully.'); await reload(); } catch (error) { notice(error.message, true); } finally { button.disabled = false; }
@@ -106,14 +127,14 @@ if (admin) {
   $('#import-class').addEventListener('change', event => loadRoster(event.target.value).catch(error => notice(error.message, true)));
   $('#roster-search').addEventListener('input', () => loadRoster($('#import-class').value).catch(error => notice(error.message, true)));
   $('#assignment-class').addEventListener('change', event => loadClassOperations(event.target.value).catch(error => notice(error.message, true)));
-  $('#save-assignments').addEventListener('click', async () => { const classSectionId = $('#assignment-class').value, assignments = [...document.querySelectorAll('[data-subject-teacher]')].filter(select => select.value).map(select => ({ subjectId: select.dataset.subjectTeacher, teacherId: select.value })); try { await api(`/academic/institution/classes/${classSectionId}/teacher-assignments`, { method: 'PUT', body: JSON.stringify({ assignments }) }); notice('Faculty and subject assignments saved.'); await loadClassOperations(classSectionId); } catch (error) { notice(error.message, true); } });
+  $('#save-assignments').addEventListener('click', async event => { const button = event.currentTarget, classSectionId = $('#assignment-class').value, assignments = [...document.querySelectorAll('[data-subject-teacher]')].filter(select => select.value).map(select => ({ subjectId: select.dataset.subjectTeacher, teacherId: select.value })); button.disabled = true; try { await api(`/academic/institution/classes/${classSectionId}/teacher-assignments`, { method: 'PUT', body: JSON.stringify({ assignments }) }); notice('Faculty and subject assignments saved.'); await loadClassOperations(classSectionId); await reload(); } catch (error) { notice(error.message, true); } finally { button.disabled = false; } });
   $('#timetable-class').addEventListener('change', event => loadClassOperations(event.target.value, true).catch(error => notice(error.message, true)));
   $('#lecture-form').addEventListener('submit', async event => { event.preventDefault(); const form = event.currentTarget, data = payload(form), classSectionId = $('#timetable-class').value; data.startMinutes = minutes(data.startTime); data.endMinutes = minutes(data.endTime); delete data.startTime; delete data.endTime; try { await api(`/academic/institution/classes/${classSectionId}/timetable/entries`, { method: 'POST', body: JSON.stringify(data) }); form.reset(); notice('Lecture added to the draft.'); await loadClassOperations(classSectionId); } catch (error) { notice(error.message, true); } });
   $('#preview-timetable').addEventListener('click', () => { $('#timetable-grid').scrollIntoView({ behavior: 'smooth', block: 'start' }); notice('Previewing the current draft. Students still see only the published version.'); });
-  $('#publish-timetable').addEventListener('click', async () => { const classSectionId = $('#timetable-class').value; try { await api(`/academic/institution/classes/${classSectionId}/timetable/publish`, { method: 'POST' }); notice('Timetable published to enrolled students and assigned teachers.'); await loadClassOperations(classSectionId); } catch (error) { notice(error.message, true); } });
+  $('#publish-timetable').addEventListener('click', async event => { const button = event.currentTarget, classSectionId = $('#timetable-class').value; if (!confirm('Publish this timetable? Students and assigned teachers will see it immediately.')) return; button.disabled = true; try { await api(`/academic/institution/classes/${classSectionId}/timetable/publish`, { method: 'POST' }); notice('Timetable published to enrolled students and assigned teachers.'); await loadClassOperations(classSectionId); } catch (error) { notice(error.message, true); } finally { button.disabled = false; } });
   document.addEventListener('click', async event => {
     const manage = event.target.closest('[data-manage-class]'), withdraw = event.target.closest('[data-withdraw]'), removeSlot = event.target.closest('[data-remove-slot]');
-    if (manage) { $('#assignment-class').value = manage.dataset.manageClass; await loadClassOperations(manage.dataset.manageClass); }
+    if (manage) { history.pushState(null, '', '#teaching-assignments'); activatePanel('teaching-assignments'); $('#assignment-class').value = manage.dataset.manageClass; await loadClassOperations(manage.dataset.manageClass); }
     if (withdraw && confirm('Remove this student from the active class roster? Attendance history will be preserved.')) { try { await api(`/academic/institution/classes/${$('#import-class').value}/enrollments/${withdraw.dataset.withdraw}`, { method: 'DELETE' }); notice('Student removed from the active roster.'); await loadRoster($('#import-class').value); } catch (error) { notice(error.message, true); } }
     if (removeSlot && confirm('Remove this lecture from the draft timetable?')) { try { const classSectionId = $('#timetable-class').value; await api(`/academic/institution/classes/${classSectionId}/timetable/entries/${removeSlot.dataset.removeSlot}`, { method: 'DELETE' }); notice('Lecture removed from the draft.'); await loadClassOperations(classSectionId); } catch (error) { notice(error.message, true); } }
   });
@@ -122,5 +143,30 @@ if (admin) {
     const item = yearButton ? state.academicYears.find(v => v.id === yearButton.dataset.editYear) : state.terms.find(v => v.id === termButton.dataset.editTerm); if (!item) return;
     const name = prompt('Name', item.name); if (!name) return; const status = prompt('Status: UPCOMING, ACTIVE, or COMPLETED', item.status)?.toUpperCase(); if (!['UPCOMING', 'ACTIVE', 'COMPLETED'].includes(status)) return notice('Choose UPCOMING, ACTIVE, or COMPLETED.', true);
     try { const path = yearButton ? `academic-years/${item.id}` : `terms/${item.id}`; await api(`/academic/institution/${path}`, { method: 'PATCH', body: JSON.stringify({ name, status }) }); notice('Academic period updated.'); await reload(); } catch (error) { notice(error.message, true); }
+  });
+  document.addEventListener('click', async event => {
+    const edit = event.target.closest('[data-edit-entity]'), remove = event.target.closest('[data-remove-entity]'), revoke = event.target.closest('[data-revoke-invite]');
+    if (revoke) {
+      if (!confirm('Revoke this pending invitation? The invite link will stop working.')) return;
+      try { await api(`/academic/institution/invitations/${revoke.dataset.revokeInvite}`, { method: 'DELETE' }); notice('Invitation revoked.'); await reload(); } catch (error) { notice(error.message, true); }
+      return;
+    }
+    const trigger = edit || remove; if (!trigger) return;
+    const type = trigger.dataset.editEntity || trigger.dataset.removeEntity, id = trigger.dataset.id;
+    const collection = type === 'academic-years' ? state.academicYears : type === 'terms' ? state.terms : type === 'classes' ? state.classes : state[type];
+    const item = collection?.find(value => value.id === id); if (!item) return;
+    if (remove) {
+      if (!confirm(`${type === 'subjects' ? 'Archive' : 'Delete'} ${item.name}? Academic dependencies will be checked before any change.`)) return;
+      try { await api(`/academic/institution/${type}/${id}`, { method: 'DELETE' }); notice(type === 'subjects' ? 'Subject archived.' : 'Record deleted.'); await reload(); } catch (error) { notice(error.message, true); }
+      return;
+    }
+    const name = prompt('Name', item.name); if (!name?.trim()) return;
+    const body = { name: name.trim() };
+    if (['departments', 'programs', 'subjects'].includes(type)) { const code = prompt('Code', item.code || ''); if (code === null) return; if (code.trim()) body.code = code.trim(); }
+    if (type === 'programs') { const duration = prompt('Duration in years', item.durationYears || ''); if (duration === null) return; if (duration) body.durationYears = Number(duration); }
+    if (type === 'classes') { const yearLevel = prompt('Year level', item.yearLevel || ''); if (yearLevel === null) return; const semester = prompt('Semester', item.semester || ''); if (semester === null) return; if (yearLevel) body.yearLevel = Number(yearLevel); if (semester) body.semester = Number(semester); }
+    if (['academic-years', 'terms'].includes(type)) { const status = prompt('Status: UPCOMING, ACTIVE, or COMPLETED', item.status)?.toUpperCase(); if (!['UPCOMING', 'ACTIVE', 'COMPLETED'].includes(status)) return notice('Choose UPCOMING, ACTIVE, or COMPLETED.', true); body.status = status; }
+    if (type === 'subjects') { const credits = prompt('Credits', item.credits ?? ''); if (credits === null) return; if (credits !== '') body.credits = Number(credits); }
+    try { await api(`/academic/institution/${type}/${id}`, { method: 'PATCH', body: JSON.stringify(body) }); notice('Record updated.'); await reload(); } catch (error) { notice(error.message, true); }
   });
 }

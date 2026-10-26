@@ -11,6 +11,10 @@ import('./frontend-api.js').then(async ({ api, avatarUrl, escapeHtml, restoreSes
   let currentUser;
   let requestVersion = 0;
   let debounceTimer;
+  const filters = document.querySelector('#filters');
+  filters.querySelectorAll('.filter').forEach(node => node.remove());
+  filters.insertAdjacentHTML('beforeend', `<label class="filter"><strong>Course</strong><input id="discover-course" placeholder="Course name"></label><label class="filter"><strong>Year</strong><select id="discover-year"><option value="">Any year</option><option value="FIRST">1st year</option><option value="SECOND">2nd year</option><option value="THIRD">3rd year</option><option value="FOURTH">4th year</option><option value="POSTGRADUATE">Postgraduate</option></select></label><label class="filter"><strong>Skill</strong><input id="discover-skill" placeholder="React, design..."></label><label class="filter"><strong>Role</strong><select id="discover-role"><option value="">Any role</option><option value="STUDENT">Student</option><option value="TEACHER">Teacher</option><option value="COLLEGE_ADMIN">College admin</option></select></label>`);
+  const filterControls = ['discover-course','discover-year','discover-skill','discover-role'].map(id => document.querySelector(`#${id}`));
 
   const setStatus = (message) => { status.textContent = message; };
   const updateCount = (value) => { count.textContent = value; tabCount.textContent = value; };
@@ -34,7 +38,8 @@ import('./frontend-api.js').then(async ({ api, avatarUrl, escapeHtml, restoreSes
     empty.hidden = true;
     setStatus(query ? 'Searching registered students…' : 'Loading registered students…');
     try {
-      const users = await api(query ? `/users/search?q=${encodeURIComponent(query)}` : '/users?limit=20');
+      const params = new URLSearchParams({ limit: '20' }); if (query) params.set('q', query); ['course','year','skill','role'].forEach((key,index) => { if (filterControls[index].value.trim()) params.set(key, filterControls[index].value.trim()); });
+      const users = await api(`/users/search?${params}`);
       const visible = users.filter((user) => user.id !== currentUser.id);
       const relationshipEntries = await Promise.all(visible.map(async (user) => [user.id, await stateFor(api, user.id)]));
       if (version !== requestVersion) return;
@@ -57,7 +62,7 @@ import('./frontend-api.js').then(async ({ api, avatarUrl, escapeHtml, restoreSes
     window.clearTimeout(debounceTimer);
     debounceTimer = window.setTimeout(() => { void loadUsers(); }, 250);
   };
-  const clearSearch = () => { search.value = ''; if (globalSearch) globalSearch.value = ''; void loadUsers(); };
+  const clearSearch = () => { search.value = ''; if (globalSearch) globalSearch.value = ''; filterControls.forEach(control => control.value = ''); void loadUsers(); };
 
   try {
     currentUser = await restoreSession();
@@ -66,6 +71,7 @@ import('./frontend-api.js').then(async ({ api, avatarUrl, escapeHtml, restoreSes
     search.addEventListener('search', () => void loadUsers());
     globalSearch?.addEventListener('input', () => scheduleSearch(globalSearch.value));
     globalSearch?.addEventListener('search', () => void loadUsers());
+    filterControls.forEach(control => control.addEventListener(control.tagName === 'INPUT' ? 'input' : 'change', () => scheduleSearch(search.value)));
     document.querySelector('#clear-filters')?.addEventListener('click', clearSearch);
     document.querySelector('#empty-clear')?.addEventListener('click', clearSearch);
     document.querySelector('#filter-toggle')?.addEventListener('click', () => document.querySelector('#filters')?.classList.toggle('show'));

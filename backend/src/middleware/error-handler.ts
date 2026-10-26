@@ -6,10 +6,12 @@ import { env } from '../config/env.js';
 import { logger } from '../config/logger.js';
 import { AppError } from '../utils/app-error.js';
 
-export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
+export const errorHandler: ErrorRequestHandler = (error, req, res, _next) => {
   if (error instanceof multer.MulterError) {
     const tooLarge = error.code === 'LIMIT_FILE_SIZE';
-    return res.status(tooLarge ? 413 : 400).json({ success: false, error: { code: 'INVALID_AVATAR', message: tooLarge ? 'Profile photos must be 5 MB or smaller.' : 'The profile photo upload is invalid.' } });
+    const isPostMedia = req.path.includes('/posts/media');
+    const limit = isPostMedia ? '8 MB' : '5 MB';
+    return res.status(tooLarge ? 413 : 400).json({ success: false, error: { code: isPostMedia ? 'INVALID_MEDIA' : 'INVALID_AVATAR', message: tooLarge ? `Images must be ${limit} or smaller.` : 'The image upload is invalid.' } });
   }
   if (error instanceof ZodError) {
     const issue = error.issues[0];

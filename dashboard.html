@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"><script src="theme-init.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Dashboard — CampusSphere</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,6 +11,10 @@
 <link rel="stylesheet" href="dashboard-search.css">
 <style>.dashboard-empty{margin:12px 0;color:#70798e;font-size:11px}</style>
 <script type="module" src="dashboard.js?v=academic-foundation-1"></script>
+<link rel="stylesheet" href="campussphere-ui.css"><link rel="stylesheet" href="completion-ui.css">
+<link rel="stylesheet" href="reference-design.css">
+<script defer src="reference-design.js"></script>
+<link rel="icon" type="image/svg+xml" href="assets/campussphere-icon.svg">
 </head>
 <body>
 <div class="app-shell">
@@ -18,31 +22,33 @@
 <a class="brand" href="dashboard.html">
 <b>C</b>CampusSphere</a>
 <nav aria-label="Dashboard navigation">
-<a class="selected" href="dashboard.html">⌂ <span>Dashboard</span>
+<a class="selected" href="dashboard.html"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg> <span>Dashboard</span>
 </a>
-<a href="discover.html">◈ <span>Discover</span>
+<a href="discover.html"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"/></svg> <span>Discover</span>
+</a><a href="social-network.html">
+  ◉ <span>Social Network</span>
 </a>
-<a href="communities.html">◎ <span>Communities</span>
+<a href="communities.html"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M17 8a3 3 0 1 1 0 6M22 21a6 6 0 0 0-5-5.65"/></svg> <span>Communities</span>
 </a>
-<a href="events.html">◷ <span>Events</span>
+<a href="events.html"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg> <span>Events</span>
 </a>
-<a href="projects.html">◇ <span>Projects</span>
+<a href="projects.html"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V4h8v3M3 12h18"/></svg> <span>Projects</span>
 </a>
-<a href="opportunities.html">↗ <span>Opportunities</span>
+<a href="opportunities.html"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M8.5 14.5A7 7 0 1 1 15.5 14.5c-.9.7-1.5 1.5-1.5 2.5h-4c0-1-.6-1.8-1.5-2.5Z"/></svg> <span>Opportunities</span>
 </a>
 <a href="academics.html">▣ <span>Academics</span>
 </a>
 <hr>
-<a href="messages.html">◌ <span>Messages</span>
+<a href="messages.html"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/></svg> <span>Messages</span>
 <i>3</i>
 </a>
-<a href="notifications.html">♧ <span>Notifications</span>
+<a href="notifications.html"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg> <span>Notifications</span>
 <i class="dot">
 </i>
 </a>
-<a href="profile.html">♙ <span>Profile</span>
+<a href="profile.html"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg> <span>Profile</span>
 </a>
-<a href="settings.html">⚙ <span>Settings</span>
+<a href="settings.html"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.8V5M12 19v2.2M2.8 12H5M19 12h2.2M5.5 5.5 7 7M17 17l1.5 1.5M18.5 5.5 17 7M7 17l-1.5 1.5"/></svg> <span>Settings</span>
 </a>
 </nav>
 <div class="sidebar-user">
@@ -56,14 +62,14 @@
 </aside>
 <main>
 <header class="topbar">
-<button class="mobile-menu" aria-label="Open dashboard navigation">☰</button>
-<div class="search">⌕ <input id="dashboard-user-search" type="search" placeholder="Search CampusSphere" autocomplete="off" aria-expanded="false" aria-controls="dashboard-user-results">
+<button class="mobile-menu" aria-label="Open dashboard navigation"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+<div class="search"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg> <input id="dashboard-user-search" type="search" placeholder="Search CampusSphere" autocomplete="off" aria-expanded="false" aria-controls="dashboard-user-results">
 <div class="dashboard-user-results" id="dashboard-user-results" role="listbox" hidden>
 </div>
 </div>
 <div class="top-actions">
 <button class="help-button" aria-label="Help">?</button>
-<button class="bell" aria-label="Notifications">♧<i>
+<button class="bell" aria-label="Notifications"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><i>
 </i>
 </button>
 <img data-current-user-avatar alt="Current user">
@@ -73,11 +79,11 @@
 <section class="greeting">
 <div>
 <p>Tuesday, March 10</p>
-<h1>Good morning, Vijay <span>👋</span>
+<h1>Good morning, Vijay
 </h1>
 <small>Here's what's happening around your campus.</small>
 </div>
-<div class="range-wrap"><button class="outline-btn" type="button" aria-expanded="false">⌄ <span>This week</span></button><div class="range-menu" hidden><button type="button" data-range="today">Today</button><button type="button" data-range="week" aria-selected="true">This week</button><button type="button" data-range="month">This month</button></div></div>
+<div class="range-wrap"><button class="outline-btn" type="button" aria-expanded="false"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7 10 5 5 5-5"/></svg> <span>This week</span></button><div class="range-menu" hidden><button type="button" data-range="today">Today</button><button type="button" data-range="week" aria-selected="true">This week</button><button type="button" data-range="month">This month</button></div></div>
 </section>
 <section>
 <div class="section-title">
@@ -85,7 +91,7 @@
 </div>
 <div class="quick-grid">
 <a href="discover.html">
-<b class="purple">✦</b>
+<b class="purple"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.6 5.4L19 10l-5.4 1.6L12 17l-1.6-5.4L5 10l5.4-1.6L12 3Z"/></svg></b>
 <span>
 <strong>Find teammates</strong>
 <small>Build your next big idea</small>
@@ -93,7 +99,7 @@
 <i>→</i>
 </a>
 <a href="projects.html">
-<b class="coral">◇</b>
+<b class="coral"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V4h8v3M3 12h18"/></svg></b>
 <span>
 <strong>Create a project</strong>
 <small>Bring an idea to life</small>
@@ -101,7 +107,7 @@
 <i>→</i>
 </a>
 <a href="events.html">
-<b class="yellow">◷</b>
+<b class="yellow"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg></b>
 <span>
 <strong>Explore events</strong>
 <small>See what's coming up</small>
@@ -109,7 +115,7 @@
 <i>→</i>
 </a>
 <a href="communities.html">
-<b class="teal">◎</b>
+<b class="teal"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M17 8a3 3 0 1 1 0 6M22 21a6 6 0 0 0-5-5.65"/></svg></b>
 <span>
 <strong>Join a community</strong>
 <small>Find your people</small>

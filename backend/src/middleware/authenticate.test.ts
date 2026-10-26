@@ -23,4 +23,20 @@ describe('role authorization', () => {
     await authorizeRoles('TEACHER')({ auth: { sub: 'student-id', email: 'student@example.invalid' } } as never, {} as never, next);
     expect(next.mock.calls[0][0]).toMatchObject({ statusCode: 403, code: 'ROLE_REQUIRED' });
   });
+
+  it.each([
+    ['STUDENT', 'COLLEGE_ADMIN'],
+    ['TEACHER', 'COLLEGE_ADMIN'],
+    ['ADMIN', 'COLLEGE_ADMIN'],
+    ['STUDENT', 'TEACHER'],
+    ['COLLEGE_ADMIN', 'TEACHER'],
+    ['ADMIN', 'TEACHER'],
+    ['TEACHER', 'STUDENT'],
+    ['COLLEGE_ADMIN', 'STUDENT']
+  ])('rejects %s from %s academic routes', async (actualRole, requiredRole) => {
+    findUnique.mockResolvedValue({ role: actualRole });
+    const next = vi.fn();
+    await authorizeRoles(requiredRole as never)({ auth: { sub: 'user-id', email: 'user@example.invalid' } } as never, {} as never, next);
+    expect(next.mock.calls[0][0]).toMatchObject({ statusCode: 403, code: 'ROLE_REQUIRED' });
+  });
 });

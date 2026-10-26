@@ -1,4 +1,4 @@
-import('./frontend-api.js').then(async ({ api, avatarUrl, escapeHtml, restoreSession }) => {
+import('./frontend-api.js').then(async ({ api, avatarUrl, escapeHtml, mediaUrl, restoreSession }) => {
   const { actionFor, labelFor, stateFor } = await import('./connections-ui.js');
   const yearLabels = { FIRST: '1st year', SECOND: '2nd year', THIRD: '3rd year', FOURTH: '4th year', POSTGRADUATE: 'Postgraduate' };
   const yearValues = Object.fromEntries(Object.entries(yearLabels).map(([value, label]) => [label.toLowerCase(), value]));
@@ -19,6 +19,8 @@ import('./frontend-api.js').then(async ({ api, avatarUrl, escapeHtml, restoreSes
       const location = document.querySelector('.identity > small');
       if (location) location.textContent = [(isOwnProfile ? user.email : null), user.location].filter(Boolean).join(' · ') || 'CampusSphere member';
       document.querySelectorAll('.profile-image').forEach((image) => { image.src = avatarUrl(user, 120); image.alt = user.fullName; });
+      const cover = document.querySelector('.profile-hero .cover');
+      if (cover) { const coverUrl = mediaUrl(user.coverImage); cover.style.backgroundImage = coverUrl ? `url("${coverUrl.replaceAll('"','%22')}")` : ''; cover.classList.toggle('has-cover', Boolean(coverUrl)); }
       const about = document.querySelector('.about > p');
       if (about) about.textContent = user.bio || 'Tell your campus community about yourself.';
       const skills = document.querySelector('.skills');
@@ -28,6 +30,8 @@ import('./frontend-api.js').then(async ({ api, avatarUrl, escapeHtml, restoreSes
     };
 
     renderProfile();
+    const communityList = document.querySelector('.community-list');
+    if (communityList) communityList.innerHTML = user.communities?.length ? user.communities.map((community) => `<a class="profile-community" href="community-details.html?id=${encodeURIComponent(community.id)}"><b>${escapeHtml(community.name)}</b><span>${escapeHtml(community.category)} · ${community._count?.members || 0} members · ${community.role.toLowerCase()}</span></a>`).join('') : '<span>No community memberships yet.</span>';
     try {
       const userProjects = await api(`/projects?userId=${encodeURIComponent(user.id)}`);
       const projectSection = [...document.querySelectorAll('.heading')].find((heading) => heading.querySelector('h2')?.textContent.trim() === 'Projects')?.closest('article');
@@ -95,6 +99,14 @@ import('./frontend-api.js').then(async ({ api, avatarUrl, escapeHtml, restoreSes
       document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !dialog.hidden) close(); });
     };
     wirePhotoUpload();
+    if (isOwnProfile) {
+      const cover = document.querySelector('.profile-hero .cover');
+      const controls = document.createElement('div'); controls.className = 'cover-controls'; controls.innerHTML = '<button type="button" data-change-cover>Change cover</button><button type="button" data-remove-cover>Remove cover</button>'; cover.append(controls);
+      const input = Object.assign(document.createElement('input'), { type: 'file', accept: 'image/jpeg,image/png,image/webp', hidden: true }); document.body.append(input);
+      controls.querySelector('[data-change-cover]').addEventListener('click', () => input.click());
+      input.addEventListener('change', async () => { const file=input.files[0]; if(!file)return; if(!input.accept.split(',').includes(file.type)||file.size>8*1024*1024)return showFeedback('Choose a JPEG, PNG, or WebP cover up to 8 MB.',true); const preview=URL.createObjectURL(file);cover.style.backgroundImage=`url("${preview}")`;cover.classList.add('has-cover');const body=new FormData();body.append('cover',file);const button=controls.querySelector('[data-change-cover]');button.disabled=true;try{user=await api('/users/me/cover',{method:'POST',body});renderProfile();showFeedback('Profile cover updated.')}catch(error){renderProfile();showFeedback(error.message,true)}finally{URL.revokeObjectURL(preview);button.disabled=false;input.value=''}});
+      controls.querySelector('[data-remove-cover]').addEventListener('click', async () => { const button=controls.querySelector('[data-remove-cover]');button.disabled=true;try{user=await api('/users/me/cover',{method:'DELETE'});renderProfile();showFeedback('Profile cover removed.')}catch(error){showFeedback(error.message,true)}finally{button.disabled=false} });
+    }
     if (messageButton) { messageButton.hidden = isOwnProfile; messageButton.onclick = async () => { try { const conversation = await api(`/conversations/direct/${encodeURIComponent(user.id)}`, { method: 'POST' }); window.location.assign(`messages.html?conversationId=${encodeURIComponent(conversation.id)}`); } catch (error) { showFeedback(error.message, true); } }; }
 
     const form = document.querySelector('#profile-settings-form');

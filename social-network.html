@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><script src="theme-init.js"></script><meta name="viewport" content="width=device-width,initial-scale=1">
+<script>document.documentElement.classList.add('cs-shell-loading');</script>
+<title>Social Network — CampusSphere</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="internal-shell.css"><link rel="stylesheet" href="social-network.css">
+<script type="module" src="internal-shell.js"></script><script type="module" src="social-network.js"></script>
+<link rel="stylesheet" href="campussphere-ui.css"><link rel="stylesheet" href="completion-ui.css">
+<link rel="stylesheet" href="reference-design.css">
+<script defer src="reference-design.js"></script>
+<link rel="icon" type="image/svg+xml" href="assets/campussphere-icon.svg">
+</head><body class="social-network-page"><main class="social-page"><section class="social-layout">
+<div class="social-main"><article class="post-composer">
+<div class="composer-start"><img id="composer-avatar" alt="Your profile"><button id="open-post-composer" class="composer-trigger" type="button">Start a post</button></div>
+<form id="create-post-form" class="composer-expanded" hidden>
+<textarea id="post-content" name="content" maxlength="5000" placeholder="Share an update with your campus…"></textarea>
+<div id="image-preview-wrap" class="image-preview-wrap" hidden><img id="image-preview" alt="Selected attachment preview"><button type="button" id="remove-image" aria-label="Remove selected image">×</button></div>
+<input id="post-image-input" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+<div class="composer-bottom"><button id="attach-image" type="button" class="composer-action"><span aria-hidden="true">▧</span> Photo</button><div class="composer-submit"><span id="post-counter">0 / 5000</span><button id="publish-post" type="submit">Post</button></div></div>
+<p id="post-feedback" class="social-feedback" role="status" hidden></p></form></article>
+<div id="social-feed" class="social-feed" aria-live="polite"><div class="feed-loading">Loading campus feed…</div></div>
+<div class="feed-more-wrap"><button id="load-more-posts" type="button" hidden>Load more</button></div></div>
+<aside class="social-side"><article class="network-card"><div class="side-card-head"><h3>People you may know</h3><a href="discover.html">See all</a></div><div id="social-suggestions"><p class="side-empty">Finding people across CampusSphere…</p></div></article>
+<article class="network-card"><div class="side-card-head"><h3>Campus highlights</h3></div><div id="campus-highlights" class="campus-side-links"><p class="side-empty">Loading current campus activity…</p></div></article></aside>
+</section></main></body></html>

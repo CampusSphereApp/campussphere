@@ -1,6 +1,7 @@
-import { avatarUrl, logout, restoreSession } from './frontend-api.js';
+import { api, avatarUrl, logout, restoreSession } from './frontend-api.js';
 
 const courseLabel = (user) => [user.course, user.college].filter(Boolean).join(' · ') || 'CampusSphere member';
+const applyAppearance = appearance => window.CampusSphereTheme?.apply(appearance, true);
 
 const applyCurrentUser = (user) => {
   document.querySelectorAll('.sidebar-user, .sidebar .user').forEach((area) => {
@@ -50,7 +51,7 @@ document.querySelectorAll('[data-logout]').forEach((link) => link.addEventListen
 
 try {
   const currentUser = await restoreSession();
-  if (currentUser) { ensureStyles(); applyCurrentUser(currentUser); wireAccountMenu(currentUser); }
+  if (currentUser) { ensureStyles(); applyCurrentUser(currentUser); wireAccountMenu(currentUser); const settings = await api('/users/me/settings').catch(() => null); if (settings?.appearanceSettings) applyAppearance(settings.appearanceSettings); }
 } catch (error) {
   console.warn(error instanceof Error ? error.message : error);
 }

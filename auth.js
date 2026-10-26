@@ -77,7 +77,12 @@ const initialiseAuthentication = () => {
           }
         });
         googleIdentity.renderButton(googleContainer, { type: 'standard', theme: 'outline', size: 'large', text: 'continue_with', shape: 'rectangular', width: Math.min(410, Math.round(googleContainer.getBoundingClientRect().width || 410)) });
-      } catch (error) { showError(error instanceof Error ? error.message : 'Google sign-in is unavailable.'); }
+      } catch (error) {
+        googleContainer.textContent = 'Google sign-in is currently unavailable. Continue with email.';
+        googleContainer.classList.add('google-unavailable');
+        googleContainer.setAttribute('role', 'status');
+        console.warn('Google sign-in unavailable:', error.message);
+      }
     })();
   }
 
