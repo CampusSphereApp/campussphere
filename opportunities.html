@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8"><script>
+    <meta charset="utf-8"><script src="theme-init.js"></script><script>
   document.documentElement.classList.add('cs-shell-loading');
 </script><script>
   document.documentElement.classList.add('cs-shell-loading');
@@ -19,6 +19,10 @@
 <link rel="stylesheet" href="internal-shell.css">
 <script type="module" src="opportunities.js"></script>
 <script type="module" src="internal-shell.js"></script>
+<link rel="stylesheet" href="campussphere-ui.css"><link rel="stylesheet" href="completion-ui.css">
+<link rel="stylesheet" href="reference-design.css">
+<script defer src="reference-design.js"></script>
+<link rel="icon" type="image/svg+xml" href="assets/campussphere-icon.svg">
 </head>
 
 <body>
@@ -35,27 +39,27 @@
     <nav class="internal-nav">
 
       <a href="dashboard.html">
-        ⌂ <span>Dashboard</span>
+        <svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg> <span>Dashboard</span>
       </a>
 
       <a href="discover.html">
-        ◈ <span>Discover</span>
+        <svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"/></svg> <span>Discover</span>
       </a>
 
       <a href="communities.html">
-        ◎ <span>Communities</span>
+        <svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M17 8a3 3 0 1 1 0 6M22 21a6 6 0 0 0-5-5.65"/></svg> <span>Communities</span>
       </a>
 
       <a href="events.html">
-        ◷ <span>Events</span>
+        <svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg> <span>Events</span>
       </a>
 
       <a href="projects.html">
-        ◇ <span>Projects</span>
+        <svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V4h8v3M3 12h18"/></svg> <span>Projects</span>
       </a>
 
       <a class="selected" href="opportunities.html">
-        ↗ <span>Opportunities</span>
+        <svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M8.5 14.5A7 7 0 1 1 15.5 14.5c-.9.7-1.5 1.5-1.5 2.5h-4c0-1-.6-1.8-1.5-2.5Z"/></svg> <span>Opportunities</span>
       </a>
 
     <a href="academics.html" data-academics-link>
@@ -64,19 +68,19 @@
       <hr>
 
       <a href="messages.html">
-        ◌ <span>Messages</span>
+        <svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/></svg> <span>Messages</span>
       </a>
 
       <a href="notifications.html">
-        ♧ <span>Notifications</span>
+        <svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg> <span>Notifications</span>
       </a>
 
       <a href="profile.html">
-        ♙ <span>Profile</span>
+        <svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg> <span>Profile</span>
       </a>
 
       <a href="settings.html">
-        ⚙ <span>Settings</span>
+        <svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.8V5M12 19v2.2M2.8 12H5M19 12h2.2M5.5 5.5 7 7M17 17l1.5 1.5M18.5 5.5 17 7M7 17l-1.5 1.5"/></svg> <span>Settings</span>
       </a>
 
     </nav>
@@ -118,7 +122,7 @@
     <header class="internal-topbar">
 
       <div class="internal-topbar-search">
-        ⌕
+        <svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
         <input
           type="search"
           placeholder="Search CampusSphere"
@@ -129,7 +133,7 @@
       <div class="internal-top-actions">
 
         <a href="notifications.html" aria-label="Notifications">
-          ♧
+          <svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
         </a>
 
         <a href="profile.html">
@@ -151,7 +155,7 @@
                     contribute your skills.</span>
             </div><button class="primary" data-post>+ Post Opportunity</button>
         </section>
-        <section class="search"><label>⌕ <input id="search"
+        <section class="search"><label><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg> <input id="search"
                     placeholder="Search builds, skills, creators or opportunities"></label><button
                 id="filter-toggle">Filters</button></section>
         <section class="pills" id="tabs"><button class="active" data-tab="for-you">For You</button><button

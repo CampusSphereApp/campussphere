@@ -1923,6 +1923,14 @@ const wireRoleAwareAcademics = (session) => {
 
   }
 
+  else if (session.role === 'ADMIN') {
+
+    target = 'admin.html';
+
+    title = 'Open Platform Administration';
+
+  }
+
 
   /*
    * Sidebar Academics button

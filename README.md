@@ -96,14 +96,18 @@ The seed command is a safe no-op: CampusSphere does not ship fake users or demo 
 
 ```powershell
 Set-Location backend
-npm run dev
+npm.cmd run dev
 ```
 
 The default API is available at `http://localhost:4000/api/v1`. The health endpoint is `http://localhost:4000/api/health`.
 
 ### Start the frontend
 
-Serve the repository root with a static server and open `index.html`. On `localhost` or `127.0.0.1`, the frontend automatically uses port `4000` for the API.
+Open the repository root in VS Code, install the recommended **Live Server** extension if needed, and click **Go Live** with `index.html` open. The checked-in workspace settings serve this folder at `http://127.0.0.1:5500`. Open `/login.html` to sign in or `/signup.html` to create an account. Open pages through this HTTP address rather than double-clicking HTML files; browser JavaScript modules and authentication require an HTTP origin.
+
+Keep the backend running in a separate terminal with `npm.cmd run dev` from `backend/`. The frontend automatically connects to port `4000` on the same local hostname. Live Server serves the frontend only; signing in, creating accounts, and loading campus data also require the API and PostgreSQL. Check `http://127.0.0.1:4000/api/health` to verify the database connection.
+
+All pages load `reference-design.css` for the shared orange theme. Login and standalone signup use the same theme tokens, and `theme-init.js` preserves the appearance preference selected in Settings. New visits default to the light theme.
 
 For another backend origin, set this before the application scripts load:
 

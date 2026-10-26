@@ -1,11 +1,11 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><script>
+  <meta charset="utf-8"><script src="theme-init.js"></script><script>
   document.documentElement.classList.add('cs-shell-loading');
 </script>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Communities â€” CampusSphere</title>
+  <title>Communities — CampusSphere</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
@@ -14,18 +14,21 @@
   <script type="module" src="communities.js"></script>
   <link rel="stylesheet" href="internal-shell.css">
   <script type="module" src="internal-shell.js"></script>
+<link rel="stylesheet" href="campussphere-ui.css"><link rel="stylesheet" href="completion-ui.css">
+<link rel="stylesheet" href="reference-design.css">
+<script defer src="reference-design.js"></script>
+<link rel="icon" type="image/svg+xml" href="assets/campussphere-icon.svg">
 </head>
 <body>
   <header><a class="brand" href="dashboard.html"><b>C</b>CampusSphere</a><nav><a href="dashboard.html">Dashboard</a><a href="discover.html">Discover</a><a href="events.html">Events</a><a class="active" href="communities.html">Communities</a><a href="#projects">Projects</a></nav><img data-current-user-avatar alt="Current user"></header>
   <main class="wrap">
-    <section class="intro"><p>FIND YOUR PEOPLE</p><h1>Communities that feel like <i>home.</i></h1><span>Explore the clubs, societies and circles that make campus feel more like yours.</span></section>
-    <section class="search"><label>âŒ• <input id="community-search" placeholder="Search communities by name or interest"></label><button id="create-community" type="button">ï¼‹ Create community</button></section>
+    <section class="intro"><p>COMMUNITIES</p><h1>Campus communities</h1><span>Find clubs, societies and circles built around shared interests.</span></section>
+    <section class="search"><label><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="community-search" placeholder="Search communities by name or interest"></label><button id="create-community" type="button"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Create community</button></section>
     <section class="pills"><button class="active" data-category="all" type="button">All</button><button data-category="technology" type="button">Technology</button><button data-category="creative" type="button">Creative</button><button data-category="business" type="button">Business</button><button data-category="sports" type="button">Sports</button><button data-category="social" type="button">Social</button></section>
-    <section class="heading"><div><h2>Popular communities</h2><p><b id="count">0</b> communities on your campus</p></div><button type="button">Sort: Most popular âŒ„</button></section>
+    <section class="heading"><div><h2>Popular communities</h2><p><b id="count">0</b> communities on your campus</p></div><span class="muted">Sorted by popularity</span></section>
     <section class="community-grid" id="community-grid" aria-live="polite"></section>
-    <div class="empty" hidden><b>âŒ•</b><h2>No communities found</h2><p>Try another search or category.</p></div>
+    <div class="empty" hidden><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M17 8a3 3 0 1 1 0 6M22 21a6 6 0 0 0-5-5.65"/></svg><h2>No communities found</h2><p>Try another search or category.</p></div>
     <p id="community-feedback" class="community-feedback" hidden></p>
   </main>
 </body>
 </html>
-

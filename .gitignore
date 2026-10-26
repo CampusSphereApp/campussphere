@@ -48,8 +48,14 @@ temp/
 .eslintcache
 
 # Editor and operating-system files
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 .idea/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Local design references and browser verification artifacts
+.design-reference-20261026/
+.design-browser-check/

@@ -1,4 +1,4 @@
-const apiHost = window.CAMPUSSPHERE_API_ORIGIN || (['localhost', '127.0.0.1'].includes(window.location.hostname) ? `${window.location.protocol}//${window.location.hostname}:4000` : window.location.origin);
+const apiHost = String(window.CAMPUSSPHERE_API_ORIGIN || '').replace(/\/+$/, '') || (window.location.protocol === 'file:' || ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname) ? `http://${window.location.hostname || '127.0.0.1'}:4000` : window.location.origin);
 const API_BASE = `${apiHost}/api/v1`;
 const accessTokenKey = 'campussphere_access_token';
 

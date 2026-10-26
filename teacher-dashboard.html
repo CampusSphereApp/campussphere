@@ -1,103 +1,14 @@
 <!doctype html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Teacher Dashboard — CampusSphere</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="academic.css">
-    <script type="module" src="teacher-dashboard.js"></script>
+<html lang="en"><head><meta charset="utf-8"><script src="theme-init.js"></script><meta name="viewport" content="width=device-width,initial-scale=1"><title>Teacher Academics — CampusSphere</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="academic.css"><link rel="stylesheet" href="teacher-management.css"><script type="module" src="teacher-dashboard.js"></script><link rel="stylesheet" href="campussphere-ui.css"><link rel="stylesheet" href="completion-ui.css"><link rel="stylesheet" href="reference-design.css">
+<script defer src="reference-design.js"></script>
+<link rel="icon" type="image/svg+xml" href="assets/campussphere-icon.svg">
 </head>
-
-<body>
-    <div class="academic-shell">
-        <aside class="academic-sidebar"><a class="academic-brand" href="dashboard.html"><b>C</b>CampusSphere</a>
-<p class="workspace-label">Academics · Teacher</p>
-          <a class="back-dashboard" href="dashboard.html">
-  ← Back to Dashboard
-</a>
-  <nav class="academic-nav" aria-label="Teacher navigation"><a class="active"
-                    href="teacher-dashboard.html">overview </a><a href="#classes">My Classes</a><a
-                    href="#subjects">Subjects</a><a href="#attendance">Attendance</a><a href="#students">Students</a><a
-                    href="#announcements">Announcements</a><a href="profile.html">Profile</a><a
-                    href="settings.html">Settings</a></nav>
-            <div class="account"><img data-current-user-avatar alt="Current user"><span><b
-                        data-teacher-name>Loading…</b><small>Teacher</small></span><a href="login.html" data-logout>Log
-                    out</a></div>
-        </aside>
-        <main class="academic-main">
-            <header class="academic-topbar"><button class="mobile-academic-menu" type="button"
-                    aria-label="Open navigation">☰</button>
-                <div>
-  <b>Academics</b>
-  <p>Teacher workspace · Your assigned classes and responsibilities</p>
-</div>
-                </div><img data-current-user-avatar alt="Current user">
-            </header>
-            <div class="academic-content">
-                <section class="academic-hero">
-                    <div>
-                        <p class="eyebrow">TEACHER WORKSPACE</p>
-                        <h1 id="teacher-greeting">Welcome back.</h1><span>Your assigned academic information appears
-                            here.</span>
-                    </div><span class="status-pill">Teacher</span>
-                </section>
-                <section class="summary-grid">
-                    <article class="summary-card"><small>Assigned classes</small><strong
-                            id="teacher-class-count">0</strong></article>
-                    <article class="summary-card"><small>My subjects</small><strong
-                            id="teacher-subject-count">0</strong></article>
-                    <article class="summary-card"><small>Attendance sessions</small><strong>0</strong></article>
-                </section>
-                <section class="academic-grid">
-                    <article class="academic-card wide" id="classes">
-                        <div class="card-head">
-                            <h2>Today's Classes</h2><span>Assignment data</span>
-                        </div>
-                        <div id="teacher-assignments"></div>
-                    </article>
-                    <article class="academic-card" id="subjects">
-                        <div class="card-head">
-                            <h2>My Subjects</h2><span>Current term</span>
-                        </div>
-                        <div id="teacher-subjects"></div>
-                    </article>
-                    <article class="academic-card" id="attendance">
-                        <div class="card-head">
-                            <h2>Recent Attendance</h2><span>Phase 2</span>
-                        </div>
-                        <div class="empty-state"><b>No attendance sessions yet</b>
-                            <p>Lecture and attendance controls will be added after institutional class assignments are
-                                configured.</p>
-                        </div>
-                    </article>
-                    <article class="academic-card wide" id="students">
-                        <div class="card-head">
-                            <h2>Class Overview</h2><span>Enrolled students</span>
-                        </div>
-                        <div class="empty-state"><b>No assigned classes yet</b>
-                            <p>An administrator must assign a subject and class section before students can appear in
-                                this workspace.</p>
-                        </div>
-                    </article>
-                    <article class="academic-card wide" id="announcements">
-                        <div class="card-head">
-                            <h2>Announcements</h2><span>Foundation</span>
-                        </div>
-                        <div class="empty-state"><b>No academic announcements</b>
-                            <p>Announcement publishing will use teacher assignments and enrollment access in a later
-                                phase.</p>
-                        </div>
-                    </article>
-                </section>
-            </div>
-        </main>
-    </div>
-</body>
-
-</html>
+<body><div class="academic-shell"><aside class="academic-sidebar" id="teacher-sidebar"><a class="academic-brand" href="dashboard.html"><b>C</b>CampusSphere</a><p class="workspace-label">Academics · Teacher</p><a class="back-dashboard" href="dashboard.html">← Back to Dashboard</a><nav class="academic-nav" aria-label="Teacher academics"><a href="#overview">Overview</a><a href="#classes">My Classes</a><a href="#subjects">My Subjects</a><a href="#timetable">Timetable</a><a href="teacher-attendance.html">Attendance</a><a href="#students">Students</a></nav><div class="account"><img data-current-user-avatar alt="Current user"><span><b data-teacher-name>Loading…</b><small>Teacher</small></span><a href="login.html" data-logout>Log out</a></div></aside>
+<main class="academic-main"><header class="academic-topbar"><button class="mobile-academic-menu" type="button" aria-label="Open navigation" aria-controls="teacher-sidebar"><svg class="cs-inline-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><div><b>Teacher Academics</b><p>Your assigned classes, subjects, timetable and students</p></div><img data-current-user-avatar alt="Current user"></header>
+<div class="academic-content"><div id="teacher-feedback" class="management-feedback" role="status" hidden></div><section class="academic-hero"><div><p class="eyebrow">TEACHER WORKSPACE</p><h1 id="teacher-greeting">Welcome back.</h1><span>Only current academic assignments are shown.</span></div><span class="status-pill">Teacher</span></section>
+<section class="teacher-panel" data-panel="overview"><section class="summary-grid"><article class="summary-card"><small>Assigned classes</small><strong id="teacher-class-count">0</strong></article><article class="summary-card"><small>Assigned subjects</small><strong id="teacher-subject-count">0</strong></article><article class="summary-card"><small>Attendance today</small><strong id="teacher-session-count">0</strong></article></section><div class="academic-grid"><article class="academic-card wide"><div class="card-head"><h2>Current assignments</h2><span>Active only</span></div><div id="teacher-assignments" class="assignment-list"></div></article><article class="academic-card wide"><div class="card-head"><h2>Upcoming timetable</h2></div><div id="teacher-upcoming" class="assignment-list"></div></article></div></section>
+<section class="teacher-panel" data-panel="classes" hidden><article class="academic-card"><div class="card-head"><h2>My Classes</h2><span>Assigned or explicitly accessible</span></div><div id="teacher-classes" class="management-list"></div></article></section>
+<section class="teacher-panel" data-panel="subjects" hidden><article class="academic-card"><div class="card-head"><h2>My Subjects</h2><span>Assigned subjects only</span></div><div id="teacher-subjects" class="management-list"></div></article></section>
+<section class="teacher-panel" data-panel="timetable" hidden><article class="academic-card"><div class="card-head"><h2>Published Timetable</h2><span>Read only</span></div><div id="teacher-timetable" class="weekly-grid"></div></article></section>
+<section class="teacher-panel" data-panel="students" hidden><article class="academic-card"><div class="card-head"><h2>Students</h2><select id="teacher-student-class"><option value="">Select an assigned class</option></select></div><div id="teacher-student-list" class="management-list"><div class="empty-state"><b>Select one of your classes.</b></div></div></article></section>
+</div></main></div></body></html>

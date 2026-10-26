@@ -888,202 +888,38 @@ async function authenticateGoogle(credential) {
    ------------------------------------------------------------ */
 
 async function initializeGoogle() {
-
-    const googleContainer =
-        document.getElementById(
-            "googleButtonContainer"
-        );
-
-
-    if (!googleContainer) {
-
-        console.error(
-            "Google button container not found."
-        );
-
-        return;
-    }
-
-
+    const container = document.getElementById('googleButtonContainer');
+    if (!container) return;
     try {
-
-        /*
-         * Get the real Client ID from CampusSphere backend.
-         */
-
-        const config =
-            await api(
-                "/auth/google/config"
-            );
-
-
-        const clientId =
-            config?.clientId;
-
-
-        console.log(
-            "Google config loaded:",
-            Boolean(clientId)
-        );
-
-
-        if (!clientId) {
-
-            showMessage(
-                "Google Sign-In is not configured on the CampusSphere server."
-            );
-
-            return;
+        const config = await api('/auth/google/config');
+        if (!config?.clientId) throw new Error('Google sign-in is not configured.');
+        for (let attempt = 0; attempt < 50; attempt += 1) {
+            if (window.google?.accounts?.id) break;
+            await new Promise(resolve => setTimeout(resolve, 100));
         }
-
-
-        /*
-         * Wait until Google's GIS library is loaded.
-         */
-
-        let attempts = 0;
-
-
-        const waitForGoogle =
-            setInterval(() => {
-
-                attempts++;
-
-
-                if (
-                    window.google
-                        ?.accounts
-                        ?.id
-                ) {
-
-                    clearInterval(
-                        waitForGoogle
-                    );
-
-
-                    window.google
-                        .accounts
-                        .id
-                        .initialize({
-
-                            client_id:
-                                clientId,
-
-                            callback:
-                                response => {
-
-                                    console.log(
-                                        "Google credential received:",
-                                        Boolean(
-                                            response
-                                                ?.credential
-                                        )
-                                    );
-
-
-                                    authenticateGoogle(
-                                        response
-                                            ?.credential
-                                    );
-
-                                }
-
-                        });
-
-
-                    /*
-                     * Render Google's real account chooser button.
-                     */
-
-                    googleContainer.innerHTML =
-                        "";
-
-
-                    window.google
-                        .accounts
-                        .id
-                        .renderButton(
-
-                            googleContainer,
-
-                            {
-                                type:
-                                    "standard",
-
-                                theme:
-                                    "filled_black",
-
-                                size:
-                                    "large",
-
-                                text:
-                                    authMode ===
-                                    "signup"
-
-                                        ? "signup_with"
-
-                                        : "continue_with",
-
-                                shape:
-                                    "pill",
-
-                                logo_alignment:
-                                    "left",
-
-                                width:
-                                    400
-                            }
-
-                        );
-
-
-                    googleInitialized =
-                        true;
-
-
-                    console.log(
-                        "Google Sign-In initialized."
-                    );
-
-                }
-
-
-                if (attempts >= 50) {
-
-                    clearInterval(
-                        waitForGoogle
-                    );
-
-
-                    if (!googleInitialized) {
-
-                        showMessage(
-                            "Google Sign-In could not load. Please refresh the page."
-                        );
-
-                    }
-
-                }
-
-            }, 100);
-
+        const identity = window.google?.accounts?.id;
+        if (!identity) throw new Error('Google sign-in could not load.');
+        identity.initialize({
+            client_id: config.clientId,
+            callback: response => authenticateGoogle(response?.credential)
+        });
+        identity.renderButton(container, {
+            type: 'standard', theme: 'outline', size: 'large',
+            text: authMode === 'signup' ? 'signup_with' : 'continue_with',
+            shape: 'rectangular', logo_alignment: 'left',
+            width: Math.min(400, Math.floor(container.getBoundingClientRect().width || 400))
+        });
+        googleInitialized = true;
+    } catch (error) {
+        // Optional Google availability must not appear as an email form failure.
+        container.textContent = 'Google sign-in is currently unavailable. Continue with email.';
+        container.classList.add('google-unavailable');
+        container.setAttribute('role', 'status');
+        console.warn('Google sign-in unavailable:', error.message);
     }
-
-    catch (error) {
-
-        console.error(
-            "Google configuration error:",
-            error
-        );
-
-
-        showMessage(
-            getErrorMessage(error)
-        );
-
-    }
-
 }
+
+
 /* ============================================================
    RESTORE EXISTING SESSION
    ============================================================ */
