@@ -1,3 +1,4 @@
+import { redactProfileFields } from '../services/profile-privacy.service.js';
 import type { RequestHandler } from 'express';
 import { CommunityRole } from '@prisma/client';
 import { prisma } from '../config/prisma.js';
@@ -5,8 +6,8 @@ import { AppError } from '../utils/app-error.js';
 import { asyncHandler } from '../utils/async-handler.js';
 
 const boundedNumber = (value: unknown, fallback: number) => Math.max(1, Math.min(Number(value) || fallback, 50));
-const fields = (userId: string) => ({ id: true, name: true, description: true, category: true, image: true, banner: true, createdAt: true, owner: { select: { id: true, fullName: true, avatar: true, college: true, course: true } }, members: { where: { userId }, select: { role: true } }, _count: { select: { members: true, posts: true } } });
-const present = (community: any) => ({ ...community, joined: community.members.length > 0, membershipRole: community.members[0]?.role ?? null, members: undefined });
+const fields = (userId: string) => ({ id: true, name: true, description: true, category: true, image: true, banner: true, createdAt: true, owner: { select: { id: true, fullName: true, avatar: true, privacySettings: true, college: true, course: true } }, members: { where: { userId }, select: { role: true } }, _count: { select: { members: true, posts: true } } });
+const present = (community: any) => ({ ...community, owner: redactProfileFields(community.owner), joined: community.members.length > 0, membershipRole: community.members[0]?.role ?? null, members: undefined });
 
 export const listCommunities: RequestHandler = asyncHandler(async (req, res) => {
   const limit = boundedNumber(req.query.limit, 20); const page = boundedNumber(req.query.page, 1); const q = typeof req.query.q === 'string' ? req.query.q.trim() : '';
@@ -44,6 +45,6 @@ export const leaveCommunity: RequestHandler = asyncHandler(async (req, res) => {
 
 export const members: RequestHandler = asyncHandler(async (req, res) => {
   const communityId = String(req.params.id); const exists = await prisma.community.findUnique({ where: { id: communityId }, select: { id: true } }); if (!exists) throw new AppError(404, 'COMMUNITY_NOT_FOUND', 'Community not found.');
-  const data = await prisma.communityMember.findMany({ where: { communityId }, orderBy: { joinedAt: 'asc' }, select: { role: true, joinedAt: true, user: { select: { id: true, fullName: true, avatar: true, college: true, course: true, year: true, skills: true } } } });
-  res.json({ success: true, data });
+  const data = await prisma.communityMember.findMany({ where: { communityId }, orderBy: { joinedAt: 'asc' }, select: { role: true, joinedAt: true, user: { select: { id: true, fullName: true, avatar: true, privacySettings: true, college: true, course: true, year: true, skills: true } } } });
+  res.json({ success: true, data: data.map(member => ({ ...member, user: redactProfileFields(member.user, req.auth!.sub) })) });
 });

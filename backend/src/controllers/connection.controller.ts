@@ -4,6 +4,7 @@ import { prisma } from '../config/prisma.js';
 import { AppError } from '../utils/app-error.js';
 import { asyncHandler } from '../utils/async-handler.js';
 import { publicUser } from '../utils/user.js';
+import { createPreferredNotification } from '../services/notification-preference.service.js';
 
 const connectionInclude = { requester: true, recipient: true } as const;
 type ConnectionWithUsers = Prisma.ConnectionGetPayload<{ include: typeof connectionInclude }>;
@@ -36,7 +37,7 @@ export const sendConnection: RequestHandler = asyncHandler(async (req, res) => {
     if (existing?.status === ConnectionStatus.BLOCKED) throw new AppError(403, 'CONNECTION_BLOCKED', 'This connection is unavailable.');
     if (existing?.status === ConnectionStatus.REJECTED) await tx.connection.delete({ where: { id: existing.id } });
     const created = await tx.connection.create({ data: { requesterId: req.auth!.sub, recipientId }, include: connectionInclude });
-    await tx.notification.create({ data: { userId: recipientId, type: NotificationType.CONNECTION_REQUEST, title: 'New connection request', message: `${created.requester.fullName} wants to connect with you.`, data: { connectionId: created.id } } });
+    await createPreferredNotification(recipientId, 'connections', { userId: recipientId, type: NotificationType.CONNECTION_REQUEST, title: 'New connection request', message: `${created.requester.fullName} wants to connect with you.`, data: { connectionId: created.id } }, tx);
     return created;
   });
   res.status(201).json({ success: true, data: serialize(connection) });
@@ -50,7 +51,7 @@ const resolve = (status: ConnectionStatus): RequestHandler => asyncHandler(async
   if (connection.status !== ConnectionStatus.PENDING) throw new AppError(409, 'CONNECTION_RESOLVED', 'This connection request has already been resolved.');
   const updated = await prisma.$transaction(async (tx) => {
     const result = await tx.connection.update({ where: { id }, data: { status }, include: connectionInclude });
-    if (status === ConnectionStatus.ACCEPTED) await tx.notification.create({ data: { userId: result.requesterId, type: NotificationType.CONNECTION_ACCEPTED, title: 'Connection accepted', message: `${result.recipient.fullName} accepted your connection request.`, data: { connectionId: result.id } } });
+    if (status === ConnectionStatus.ACCEPTED) await createPreferredNotification(result.requesterId, 'connections', { userId: result.requesterId, type: NotificationType.CONNECTION_ACCEPTED, title: 'Connection accepted', message: `${result.recipient.fullName} accepted your connection request.`, data: { connectionId: result.id } }, tx);
     return result;
   });
   res.json({ success: true, data: serialize(updated) });

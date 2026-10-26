@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { googleConfig, googleLogin, login, logout, me, refresh, register } from '../controllers/auth.controller.js';
+import { changePassword, googleConfig, googleLogin, login, logout, me, refresh, register } from '../controllers/auth.controller.js';
 import { authenticate } from '../middleware/authenticate.js';
 import { authRateLimit } from '../middleware/rate-limiters.js';
 export const authRouter = Router();
@@ -10,3 +10,4 @@ authRouter.post('/google', authRateLimit, googleLogin);
 authRouter.post('/logout', logout);
 authRouter.post('/refresh', refresh);
 authRouter.get('/me', authenticate, me);
+authRouter.post('/change-password', authenticate, authRateLimit, changePassword);

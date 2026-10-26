@@ -1,9 +1,13 @@
 import { Router } from 'express';
-import { getUser, listUsers, updateAvatar, updateMe, uploadAvatar } from '../controllers/user.controller.js';
+import { getSettings, getUser, listUsers, removeCover, updateAvatar, updateCover, updateMe, updateSettings, uploadAvatar, uploadCover } from '../controllers/user.controller.js';
 import { authenticate } from '../middleware/authenticate.js';
 export const userRouter = Router();
-userRouter.get('/', listUsers);
-userRouter.get('/search', listUsers);
+userRouter.get('/', authenticate, listUsers);
+userRouter.get('/search', authenticate, listUsers);
 userRouter.patch('/me', authenticate, updateMe);
 userRouter.post('/me/avatar', authenticate, uploadAvatar, updateAvatar);
-userRouter.get('/:id', getUser);
+userRouter.post('/me/cover', authenticate, uploadCover, updateCover);
+userRouter.delete('/me/cover', authenticate, removeCover);
+userRouter.get('/me/settings', authenticate, getSettings);
+userRouter.patch('/me/settings', authenticate, updateSettings);
+userRouter.get('/:id', authenticate, getUser);

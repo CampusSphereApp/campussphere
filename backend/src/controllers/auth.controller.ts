@@ -3,6 +3,7 @@ import type { RequestHandler } from 'express';
 import crypto from 'node:crypto';
 import { OAuth2Client } from 'google-auth-library';
 import { env } from '../config/env.js';
+import { logger } from '../config/logger.js';
 import { prisma } from '../config/prisma.js';
 import { AppError } from '../utils/app-error.js';
 import { asyncHandler } from '../utils/async-handler.js';
@@ -10,6 +11,7 @@ import { clearRefreshCookie, createAccessToken, createRefreshToken, readCookie, 
 import { profileInclude, profileUser, publicUser } from '../utils/user.js';
 import { googleCredentialSchema, loginSchema, registerSchema } from '../validators/auth.validator.js';
 import { claimPendingEnrollments } from '../services/pending-enrollment.service.js';
+import { z } from 'zod';
 
 const googleClient = new OAuth2Client(env.GOOGLE_CLIENT_ID);
 
@@ -30,14 +32,14 @@ export const register: RequestHandler = asyncHandler(async (req, res) => {
     interests: interests.length ? { create: interests.map((name) => ({ interest: { connectOrCreate: { where: { name }, create: { name } } } })) } : undefined
   } });
   const accessToken = await authenticateResponse(user, res);
-  res.status(201).json({ success: true, data: { user: publicUser(user), accessToken } });
+  res.status(201).json({ success: true, data: { user: publicUser(user, true), accessToken } });
 });
 export const login: RequestHandler = asyncHandler(async (req, res) => {
   const { body } = loginSchema.parse({ body: req.body });
   const user = await prisma.user.findUnique({ where: { email: body.email } });
   if (!user || !(await bcrypt.compare(body.password, user.passwordHash))) throw new AppError(401, 'INVALID_CREDENTIALS', 'Email or password is incorrect.');
   const accessToken = await authenticateResponse(user, res);
-  res.json({ success: true, data: { user: publicUser(user), accessToken } });
+  res.json({ success: true, data: { user: publicUser(user, true), accessToken } });
 });
 export const googleConfig: RequestHandler = (_req, res) => { res.json({ success: true, data: { clientId: env.GOOGLE_CLIENT_ID } }); };
 export const googleLogin: RequestHandler = asyncHandler(async (req, res) => {
@@ -46,8 +48,16 @@ export const googleLogin: RequestHandler = asyncHandler(async (req, res) => {
   try {
     const ticket = await googleClient.verifyIdToken({ idToken: body.credential, audience: env.GOOGLE_CLIENT_ID });
     payload = ticket.getPayload();
-  } catch {
-    throw new AppError(401, 'INVALID_GOOGLE_CREDENTIAL', 'Google could not verify this sign-in. Please try again.');
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : 'Unknown Google verification error';
+    logger.warn({ reason }, 'Google ID token verification failed');
+    throw new AppError(
+      401,
+      'INVALID_GOOGLE_CREDENTIAL',
+      env.NODE_ENV === 'development'
+        ? `Google could not verify this sign-in: ${reason}`
+        : 'Google could not verify this sign-in. Please try again.'
+    );
   }
   if (!payload?.sub || !payload.email || payload.email_verified !== true) throw new AppError(401, 'UNVERIFIED_GOOGLE_ACCOUNT', 'A verified Google email address is required.');
   const email = payload.email.toLowerCase();
@@ -70,7 +80,7 @@ export const googleLogin: RequestHandler = asyncHandler(async (req, res) => {
     });
   }
   const accessToken = await authenticateResponse(user, res);
-  res.json({ success: true, data: { user: publicUser(user), accessToken } });
+  res.json({ success: true, data: { user: publicUser(user, true), accessToken } });
 });
 export const logout: RequestHandler = asyncHandler(async (req, res) => {
   const token = readCookie(req.headers.cookie, 'refreshToken');
@@ -86,4 +96,17 @@ export const refresh: RequestHandler = asyncHandler(async (req, res) => {
   const accessToken = await authenticateResponse(user, res);
   res.json({ success: true, data: { accessToken } });
 });
-export const me: RequestHandler = asyncHandler(async (req, res) => { const user = await prisma.user.findUnique({ where: { id: req.auth!.sub }, include: profileInclude }); if (!user) throw new AppError(404, 'USER_NOT_FOUND', 'User not found.'); res.json({ success: true, data: profileUser(user, true) }); });
+export const me: RequestHandler = asyncHandler(async (req, res) => { const user = await prisma.user.findUnique({ where: { id: req.auth!.sub }, include: profileInclude }); if (!user) throw new AppError(404, 'USER_NOT_FOUND', 'User not found.'); res.json({ success: true, data: { ...profileUser(user, true), authProvider: user.googleSub ? 'GOOGLE' : 'PASSWORD' } }); });
+
+const passwordChangeSchema = z.object({ currentPassword: z.string().min(1).max(128), newPassword: z.string().min(8, 'New password must be at least 8 characters.').max(128) }).strict();
+export const changePassword: RequestHandler = asyncHandler(async (req, res) => {
+  const body = passwordChangeSchema.parse(req.body);
+  const user = await prisma.user.findUnique({ where: { id: req.auth!.sub }, select: { passwordHash: true, googleSub: true } });
+  if (!user) throw new AppError(404, 'USER_NOT_FOUND', 'User not found.');
+  if (user.googleSub) throw new AppError(409, 'GOOGLE_ACCOUNT', 'Your account currently uses Google sign-in. Password changes are unavailable.');
+  if (!await bcrypt.compare(body.currentPassword, user.passwordHash)) throw new AppError(400, 'CURRENT_PASSWORD_INCORRECT', 'Current password is incorrect.');
+  if (await bcrypt.compare(body.newPassword, user.passwordHash)) throw new AppError(400, 'PASSWORD_UNCHANGED', 'Choose a password you have not already used.');
+  await prisma.user.update({ where: { id: req.auth!.sub }, data: { passwordHash: await bcrypt.hash(body.newPassword, 12), refreshTokenHash: null } });
+  clearRefreshCookie(res);
+  res.json({ success: true, data: { message: 'Password changed successfully. Sign in again on your next visit.' } });
+});

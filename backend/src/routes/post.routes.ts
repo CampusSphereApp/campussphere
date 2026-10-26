@@ -12,7 +12,7 @@ export const postRouter = Router();
  * Existing generic/community post listing.
  * Keep this route for current CampusSphere features.
  */
-postRouter.get('/', p.listPosts);
+postRouter.get('/', authenticate, p.listPosts);
 
 
 /*
@@ -77,6 +77,7 @@ postRouter.delete(
  */
 postRouter.get(
   '/:id/comments',
+  authenticate,
   p.comments
 );
 

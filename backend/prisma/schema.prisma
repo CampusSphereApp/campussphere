@@ -222,12 +222,16 @@ model User {
   googleSub                  String?                    @unique
   role                       UserRole                   @default(STUDENT)
   avatar                     String?
+  coverImage                 String?
   bio                        String?
   college                    String?
   course                     String?
   year                       UserYear?
   location                   String?
   refreshTokenHash           String?
+  notificationPreferences    Json?
+  privacySettings            Json?
+  appearanceSettings         Json?
   collegeId                  String?
   departmentId               String?
   academicProgramId          String?
